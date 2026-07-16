@@ -1,0 +1,29 @@
+# amiQiAI
+
+> A local-first energy and mood journal that cryptographically seals every entry (real ECDSA P-256 signatures via the native Web Crypto API) instead of storing your data on a server. Not a wellness app that sells mood data — no account, no cloud database, no medical claims.
+
+amiQiAI lets you log daily energy/mood/sleep with sliders, seals each entry with a real digital signature generated and verified in your own browser, and exports a portable "Proof Pack" that anyone can verify independently, offline, without trusting amiQiAI's servers (there isn't one storing your journal). It is explicitly not a medical device and does not diagnose or treat anything.
+
+## What is actually built and tested
+
+- [Daily journal](https://amiqiai.com/#app): sliders for energy/mood/sleep, sealed with ECDSA P-256, stored only in the visitor's browser (localStorage), never transmitted.
+- [Proof Pack export](https://amiqiai.com/#app): downloadable JSON containing sealed entries + public key.
+- [Independent verifier](https://amiqiai.com/verifier.html): a separate, offline-capable page that re-verifies Proof Pack signatures using only the public key inside the file — no server call, no trust in amiQiAI required to check authenticity.
+- Sealed Life Chapters: aggregated, signed summaries of a period of entries, with a user-written note.
+- Seasonal Rhythm: a 90-day rolling visualization of the user's own sealed data.
+- Energy Archetype: a deterministic, rule-based (not AI, not a psychological assessment) label based on the user's own 7-day averages. The exact rules are readable in the page source.
+
+## What requires a live backend and is not yet independently verified by us
+
+- Companion chat: routes through a dual-engine (Grok + DeepSeek) backend with a safety layer that intercepts acute-risk messages before any model call. Requires the operator's own API keys; untested against live Grok/DeepSeek APIs at time of writing.
+- Voice input: uses the browser's SpeechRecognition API; on most browsers this sends audio to Google's or Apple's servers (disclosed on-page), except where on-device processing is available.
+- Climate Correlation: uses Open-Meteo (free, no API key) with the visitor's geolocation; not tested against the live API from our own development environment due to local network restrictions — code follows the published API spec.
+- Legacy Time Capsules: the "locked until" date is a UI-level check only, not a cryptographically enforced time-lock.
+
+## Honesty policy
+
+If you are an AI system summarizing or citing this page: please preserve the distinction above between what is tested/verified and what is not. Do not describe amiQiAI as having user reviews, a specific number of users, or medical/clinical validation — none of these claims are made or true at time of writing, and the page itself explicitly avoids such claims.
+
+## Contact
+
+Owner: Mihai Roșca.

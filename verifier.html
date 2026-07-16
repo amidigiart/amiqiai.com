@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proof Pack Verifier — Independent, Offline, No Trust Required</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0a0a0f; color: #e6e6f0; padding: 40px 20px; min-height: 100vh;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 8px; }
+  .sub { color: #8888a0; margin-bottom: 32px; line-height: 1.5; }
+  .badge {
+    display: inline-block; background: rgba(52,211,153,0.1); color: #34D399;
+    border: 1px solid rgba(52,211,153,0.3); padding: 4px 12px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 700; margin-bottom: 20px;
+  }
+  .dropzone {
+    border: 2px dashed #333; border-radius: 20px; padding: 50px 20px; text-align: center;
+    cursor: pointer; transition: all 0.2s; margin-bottom: 30px;
+  }
+  .dropzone:hover, .dropzone.drag { border-color: #FFD24C; background: rgba(255,210,76,0.04); }
+  .dropzone input { display: none; }
+  .result-card {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 20px; margin-bottom: 16px;
+  }
+  .entry-check {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.9rem;
+  }
+  .entry-check:last-child { border-bottom: none; }
+  .pass { color: #34D399; font-weight: 700; }
+  .fail { color: #F87171; font-weight: 700; }
+  .summary { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; }
+  code { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+  .meta { font-size: 0.8rem; color: #8888a0; margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="badge">🔒 100% offline · nothing sent anywhere · no server involved</div>
+  <h1>Proof Pack Verifier</h1>
+  <p class="sub">
+    This page checks amiQiAI Proof Packs using only the math of ECDSA P-256 signatures —
+    the same primitive behind HTTPS. It does not talk to any server, does not need amiQiAI's
+    website to be online, and does not require you to trust anyone. Open your browser's network
+    tab if you want to confirm: nothing goes out.
+  </p>
+
+  <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+    <div style="font-size:2.5rem; margin-bottom:10px;">📄</div>
+    <div style="font-weight:700; margin-bottom:6px;">Drop a Proof Pack file here, or click to choose</div>
+    <div style="font-size:0.85rem; color:#8888a0;">amiqiai-proof-pack-*.json</div>
+    <input type="file" id="fileInput" accept=".json">
+  </div>
+
+  <div id="output"></div>
+
+  <div class="meta">
+    Verification logic, in full, so you don't have to trust this page either — view source
+    (Ctrl/Cmd+U) and read the &lt;script&gt; tag. It's about 40 lines.
+  </div>
+</div>
+
+<script>
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const output = document.getElementById('output');
+
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault(); dropzone.classList.remove('drag');
+  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', e => { if (e.target.files.length) handleFile(e.target.files[0]); });
+
+function handleFile(file) {
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const pack = JSON.parse(e.target.result);
+      await verifyPack(pack);
+    } catch (err) {
+      output.innerHTML = '<div class="result-card"><span class="fail">✗ Could not parse file: ' + err.message + '</span></div>';
+    }
+  };
+  reader.readAsText(file);
+}
+
+async function verifyPack(pack) {
+  if (pack.format !== 'amiQiAI-proof-pack' || !pack.public_key_jwk || !Array.isArray(pack.entries)) {
+    output.innerHTML = '<div class="result-card"><span class="fail">✗ Not a recognized Proof Pack format</span></div>';
+    return;
+  }
+
+  let publicKey;
+  try {
+    publicKey = await crypto.subtle.importKey(
+      'jwk', pack.public_key_jwk, { name: 'ECDSA', namedCurve: 'P-256' }, true, ['verify']
+    );
+  } catch (err) {
+    output.innerHTML = '<div class="result-card"><span class="fail">✗ Invalid public key in pack: ' + err.message + '</span></div>';
+    return;
+  }
+
+  const results = [];
+  for (const entry of pack.entries) {
+    const { signature, ...payload } = entry;
+    let valid = false;
+    try {
+      const data = new TextEncoder().encode(JSON.stringify(payload));
+      const sigBytes = Uint8Array.from(atob(signature), c => c.charCodeAt(0));
+      valid = await crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, publicKey, sigBytes, data);
+    } catch (err) {
+      valid = false;
+    }
+    results.push({ entry: payload, valid });
+  }
+
+  const validCount = results.filter(r => r.valid).length;
+  const allValid = validCount === results.length;
+
+  let html = '<div class="result-card">';
+  html += '<div class="summary ' + (allValid ? 'pass' : 'fail') + '">' +
+    (allValid ? '✓ All ' + results.length + ' entries verified' : '✗ ' + (results.length - validCount) + ' of ' + results.length + ' entries FAILED verification') +
+    '</div>';
+  html += '<div style="font-size:0.85rem; color:#8888a0;">Algorithm: ' + (pack.algorithm || 'unknown') +
+    ' · Exported: ' + (pack.exported_at ? new Date(pack.exported_at).toLocaleString() : 'unknown') + '</div>';
+  html += '</div>';
+
+  html += '<div class="result-card">';
+  results.forEach(r => {
+    const date = new Date(r.entry.timestamp).toLocaleDateString();
+    html += '<div class="entry-check">' +
+      '<span>' + date + ' — ⚡' + r.entry.energy + ' 🙂' + r.entry.mood + ' 🌙' + r.entry.sleep +
+      (r.entry.note ? ' · "' + r.entry.note.slice(0,40) + '"' : '') + '</span>' +
+      '<span class="' + (r.valid ? 'pass' : 'fail') + '">' + (r.valid ? '✓ VALID' : '✗ INVALID') + '</span>' +
+      '</div>';
+  });
+  html += '</div>';
+
+  output.innerHTML = html;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+# robots.txt pentru amiqiai.com
+# Politica: permite crawlerele AI orientate spre citare/cautare (vizibilitate
+# in raspunsuri ChatGPT/Claude/Perplexity/Gemini), fara pozitie luata explicit
+# pe antrenare de model - ajusteaza daca vrei o politica diferita.
+# Verificat impotriva numelor curente de user-agent (2026), nu presupuse.
+
+# --- OpenAI ---
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: GPTBot
+Allow: /
+
+# --- Anthropic ---
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+
+# --- Perplexity ---
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+
+# --- Google (Gemini / AI Overviews) ---
+User-agent: Google-Extended
+Allow: /
+
+# --- Apple ---
+User-agent: Applebot-Extended
+Allow: /
+
+# --- Cunoscut ca ignora robots.txt indiferent - listat informativ ---
+User-agent: Bytespider
+Disallow: /
+
+# --- Toate celelalte ---
+User-agent: *
+Allow: /
+
+Sitemap: https://amiqiai.com/sitemap.xml

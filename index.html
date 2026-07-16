@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AmiQiAI — Your Energy, Sealed & Real</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+<style>
+  * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+  h1, h2, .display { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; letter-spacing: -0.02em; }
+  body { background: #06060f; overflow-x: hidden; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.55; animation: float 12s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translate(0,0) scale(1); } 33% { transform: translate(30px,-40px) scale(1.1); } 66% { transform: translate(-20px,30px) scale(0.95); } }
+  .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
+  .glow-text { background: linear-gradient(90deg, #FFD24C, #FF7A5C, #A78BFA); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine 4s linear infinite; }
+  @keyframes shine { to { background-position: 200% center; } }
+  .card-hover { transition: all .3s cubic-bezier(.2,.8,.2,1); }
+  .card-hover:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 20px 60px rgba(167,139,250,0.25); }
+  .pulse-ring { animation: pulseRing 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+  @keyframes pulseRing { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,210,76,0.4); } 50% { box-shadow: 0 0 0 16px rgba(255,210,76,0); } }
+  .marquee { display: flex; animation: scroll 22s linear infinite; white-space: nowrap; }
+  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-thumb { background: #A78BFA; border-radius: 10px; }
+  input[type=range] { -webkit-appearance: none; height: 8px; border-radius: 8px; background: rgba(255,255,255,0.1); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, #FFD24C, #FF7A5C); cursor: pointer; box-shadow: 0 2px 8px rgba(255,122,92,0.5); }
+  .seal-disc {
+    width: 140px; height: 140px; border-radius: 50%; margin: 0 auto;
+    background: radial-gradient(circle at 32% 28%, #FFD24C 0%, #FF7A5C 45%, #7A2A26 100%);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px rgba(255,122,92,0.35);
+    transform: scale(0.85); opacity: 0.5;
+    transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease;
+  }
+  .seal-disc.stamped { transform: scale(1); opacity: 1; }
+  .entry-row { border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .entry-row:last-child { border-bottom: none; }
+</style>
+</head>
+<body class="text-white">
+
+<div class="fixed inset-0 pointer-events-none z-0">
+  <div class="blob w-96 h-96 bg-orange-500 top-0 left-10"></div>
+  <div class="blob w-96 h-96 bg-purple-600 top-40 right-0" style="animation-delay:3s"></div>
+  <div class="blob w-80 h-80 bg-amber-400 bottom-0 left-1/3" style="animation-delay:6s"></div>
+</div>
+
+<div class="relative z-10">
+
+  <nav class="flex justify-between items-center px-6 md:px-12 py-5 max-w-6xl mx-auto">
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center font-black text-slate-900">⚡</div>
+      <span class="font-bold text-lg tracking-tight">amiQiAI</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <select id="langSelect" class="glass px-3 py-1.5 rounded-full text-xs font-semibold bg-transparent">
+        <option value="en">EN</option>
+        <option value="ro">RO</option>
+        <option value="fr">FR</option>
+        <option value="de">DE</option>
+        <option value="es">ES</option>
+        <option value="it">IT</option>
+      </select>
+      <button onclick="scrollToApp()" class="glass px-5 py-2 rounded-full text-sm font-semibold hover:bg-white/10 transition" data-i18n="navTry">
+        Try it free
+      </button>
+    </div>
+  </nav>
+
+  <section class="max-w-5xl mx-auto px-6 pt-16 pb-24 text-center">
+    <div class="inline-flex items-center gap-2 glass px-4 py-1.5 rounded-full text-xs font-semibold mb-8 pulse-ring">
+      <span class="w-2 h-2 bg-amber-400 rounded-full"></span>
+      <span data-i18n="heroBadge">your data, sealed — not sold</span>
+    </div>
+
+    <h1 class="display text-5xl md:text-7xl font-black leading-[0.95] mb-6">
+      <span data-i18n="heroTitle1">Track your energy</span><br/>
+      <span class="glow-text" data-i18n="heroTitle2">like it's actually yours.</span>
+    </h1>
+
+    <p class="text-lg md:text-xl text-slate-400 max-w-xl mx-auto mb-10 leading-relaxed" data-i18n-html="heroSub">
+      Not another wellness app selling your mood data.
+      Every check-in gets <strong class="text-white">cryptographically sealed</strong> —
+      verifiable proof it's real, tamper-proof, yours.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-14">
+      <button onclick="scrollToApp()" class="bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-bold px-8 py-4 rounded-2xl text-lg hover:scale-105 transition shadow-2xl shadow-orange-500/30" data-i18n="heroCta1">
+        Start your streak →
+      </button>
+      <button onclick="scrollToHow()" class="glass px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-white/10 transition" data-i18n="heroCta2">
+        See how it works
+      </button>
+    </div>
+
+    <div class="flex justify-center gap-8 md:gap-14 text-sm text-slate-400">
+      <div><div class="text-2xl font-black text-white">100%</div><span data-i18n="statLocal">local & yours</span></div>
+      <div><div class="text-2xl font-black text-white" id="streakCount">0</div><span data-i18n="statStreak">day streak</span></div>
+      <div><div class="text-2xl font-black text-white" data-i18n="statRealWord">real</div><span data-i18n="statCrypto">crypto, not fake ✨</span></div>
+    </div>
+  </section>
+
+  <div class="border-y border-white/10 py-4 overflow-hidden mb-24">
+    <div class="marquee text-slate-500 font-semibold text-sm gap-12">
+      <span class="px-6" data-i18n="marquee1">⚡ ENERGY OVER PERFECTION</span>
+      <span class="px-6" data-i18n="marquee2">🔒 SEALED, NOT SURVEILLED</span>
+      <span class="px-6" data-i18n="marquee3">🌙 SLEEP · MOOD · VIBE</span>
+      <span class="px-6" data-i18n="marquee4">✨ NO ACCOUNT NEEDED</span>
+      <span class="px-6" data-i18n="marquee1">⚡ ENERGY OVER PERFECTION</span>
+      <span class="px-6" data-i18n="marquee2">🔒 SEALED, NOT SURVEILLED</span>
+      <span class="px-6" data-i18n="marquee3">🌙 SLEEP · MOOD · VIBE</span>
+      <span class="px-6" data-i18n="marquee4">✨ NO ACCOUNT NEEDED</span>
+    </div>
+  </div>
+
+  <section id="how" class="max-w-5xl mx-auto px-6 mb-24">
+    <h2 class="display text-3xl md:text-5xl font-bold text-center mb-3" data-i18n="whyTitle">Why this hits different</h2>
+    <p class="text-center text-slate-400 mb-14" data-i18n="whySub">No other tracker does this part 👇</p>
+
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="glass card-hover rounded-3xl p-6">
+        <div class="text-4xl mb-4">🔐</div>
+        <h3 class="font-bold text-lg mb-2" data-i18n="card1Title">Real signatures, not fake badges</h3>
+        <p class="text-slate-400 text-sm" data-i18n="card1Desc">Every entry gets an actual ECDSA P-256 signature (native Web Crypto API — the same primitive behind TLS/HTTPS). Try it below, right now.</p>
+      </div>
+      <div class="glass card-hover rounded-3xl p-6">
+        <div class="text-4xl mb-4">🎮</div>
+        <h3 class="font-bold text-lg mb-2" data-i18n="card2Title">Feels like a game, not a chore</h3>
+        <p class="text-slate-400 text-sm" data-i18n="card2Desc">Sliders, streaks, instant seal animation. Built for people who grew up dragging bars in Roblox, not filling out spreadsheets.</p>
+      </div>
+      <div class="glass card-hover rounded-3xl p-6">
+        <div class="text-4xl mb-4">🚫</div>
+        <h3 class="font-bold text-lg mb-2" data-i18n="card3Title">Zero data harvesting</h3>
+        <p class="text-slate-400 text-sm" data-i18n="card3Desc">No account, no server storing your feelings. Everything lives in this browser's local storage — export or wipe it anytime.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-4xl mx-auto px-6 mb-24">
+    <div class="glass rounded-3xl p-6 md:p-10">
+      <h2 class="display text-2xl md:text-3xl font-bold text-center mb-8" data-i18n="compareTitle">amiQiAI vs. the usual mood app</h2>
+      <div class="grid grid-cols-3 text-sm md:text-base">
+        <div class="font-semibold text-slate-400 pb-3 border-b border-white/10"></div>
+        <div class="font-bold text-center pb-3 border-b border-white/10 text-amber-400">amiQiAI</div>
+        <div class="font-semibold text-center pb-3 border-b border-white/10 text-slate-500" data-i18n="compareTypical">Typical app</div>
+        <div class="py-3 border-b border-white/5 text-slate-300" data-i18n="compareRow1">Sells your data</div>
+        <div class="py-3 border-b border-white/5 text-center" data-i18n="compareRow1Us">❌ never</div>
+        <div class="py-3 border-b border-white/5 text-center text-slate-500" data-i18n="compareRow1Them">usually 👀</div>
+        <div class="py-3 border-b border-white/5 text-slate-300" data-i18n="compareRow2">Cryptographic proof</div>
+        <div class="py-3 border-b border-white/5 text-center" data-i18n="compareRow2Us">✅ real ECDSA</div>
+        <div class="py-3 border-b border-white/5 text-center text-slate-500">—</div>
+        <div class="py-3 border-b border-white/5 text-slate-300" data-i18n="compareRow3">Needs signup</div>
+        <div class="py-3 border-b border-white/5 text-center" data-i18n="compareRow3Us">✅ nope</div>
+        <div class="py-3 border-b border-white/5 text-center text-slate-500" data-i18n="compareRow3Them">always</div>
+        <div class="py-3 text-slate-300" data-i18n="compareRow4">Medical claims</div>
+        <div class="py-3 text-center" data-i18n="compareRow4Us">❌ we don't diagnose</div>
+        <div class="py-3 text-center text-slate-500" data-i18n="compareRow4Them">"AI health insights" 🚩</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="app" class="max-w-2xl mx-auto px-6 mb-24">
+    <h2 class="display text-3xl md:text-4xl font-bold text-center mb-3" data-i18n="journalTitle">Your first seal takes 20 seconds</h2>
+    <p class="text-center text-slate-400 mb-8" data-i18n="journalSub">Drag, jot a note, tap seal. Real ECDSA P-256, right here.</p>
+
+    <div class="glass rounded-3xl p-8">
+      <div class="seal-disc" id="sealDisc">
+        <span id="sealIcon" style="font-size:2.2rem;">⚡</span>
+      </div>
+      <p class="text-center text-xs text-slate-500 mt-3 mb-6" id="keyStatus" data-i18n="keyGenerating">generating your signing key...</p>
+
+      <div class="space-y-5 mb-6">
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span data-i18n="sliderEnergy">⚡ Energy</span><span id="energyVal" class="font-bold text-amber-400">7</span></div>
+          <input type="range" min="1" max="10" value="7" id="energySlider" class="w-full">
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span data-i18n="sliderMood">🙂 Mood</span><span id="moodVal" class="font-bold text-amber-400">7</span></div>
+          <input type="range" min="1" max="10" value="7" id="moodSlider" class="w-full">
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span data-i18n="sliderSleep">🌙 Sleep quality</span><span id="sleepVal" class="font-bold text-amber-400">7</span></div>
+          <input type="range" min="1" max="10" value="7" id="sleepSlider" class="w-full">
+        </div>
+      </div>
+
+      <textarea id="noteInput" data-i18n-placeholder="notePlaceholder" placeholder="Optional note (what's driving today's energy?)"
+        class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm mb-6 resize-none" rows="2"></textarea>
+
+      <button id="sealBtn" onclick="sealEntry()" disabled
+        class="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-bold py-4 rounded-2xl text-lg hover:scale-[1.02] transition disabled:opacity-40" data-i18n="sealBtnText">
+        Seal today's entry →
+      </button>
+
+      <div id="sealResult" class="mt-5 text-xs font-mono text-slate-400 break-all hidden glass rounded-xl p-4"></div>
+    </div>
+
+    <div class="glass rounded-3xl p-6 mt-6">
+      <h3 class="font-bold mb-3 text-sm text-slate-300" data-i18n="journalListTitle">Your sealed journal</h3>
+      <div id="entriesList" class="text-sm text-slate-400" data-i18n="noEntriesYet">no entries yet — seal your first one above</div>
+    </div>
+
+    <!-- SEALED LIFE CHAPTERS -->
+    <div class="glass rounded-3xl p-6 mt-6 border border-indigo-400/20">
+      <h3 class="font-bold mb-2 text-sm text-indigo-300" data-i18n="chapterTitle">📖 Seal a Life Chapter</h3>
+      <p class="text-xs text-slate-400 mb-4 leading-relaxed" data-i18n="chapterDesc">
+        Bundle a period of entries into one signed chapter — averages, entry count, and a note in your
+        own words. Meant for therapy, reflection years from now, or handing someone a real record instead
+        of a vague memory.
+      </p>
+      <textarea id="chapterNarrative" data-i18n-placeholder="chapterPlaceholder" placeholder="What defined this period? (optional)"
+        class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm mb-3 resize-none" rows="2"></textarea>
+      <button onclick="sealChapter()" class="w-full glass border border-indigo-400/30 text-indigo-300 font-bold py-3 rounded-2xl hover:bg-indigo-400/10 transition" data-i18n="chapterBtn">
+        Seal all entries so far as a Chapter →
+      </button>
+      <p class="text-xs text-slate-600 mt-2 text-center" id="chapterStatus"></p>
+      <div id="chaptersList" class="mt-4 space-y-2 text-sm text-slate-400"></div>
+    </div>
+
+    <!-- SEASONAL RHYTHM -->
+    <div class="glass rounded-3xl p-6 mt-6 border border-teal-400/20">
+      <h3 class="font-bold mb-2 text-sm text-teal-300" data-i18n="rhythmTitle">🌊 Seasonal Rhythm (last 90 days)</h3>
+      <p class="text-xs text-slate-400 mb-4" data-i18n="rhythmDesc">Weekly average energy, from your sealed entries — not daily noise, the actual pattern.</p>
+      <div id="rhythmChart" class="flex items-end gap-1 h-24"></div>
+      <p class="text-xs text-slate-600 mt-2" id="rhythmStatus" data-i18n="rhythmEmpty">seal a few entries across different weeks to see this fill in</p>
+    </div>
+
+    <!-- ENERGY ARCHETYPE -->
+    <div class="glass rounded-3xl p-6 mt-6 border border-pink-400/20">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="font-bold text-sm text-pink-300" data-i18n="archetypeTitle">🎭 Your Energy Archetype</h3>
+        <span class="text-xs text-slate-500" data-i18n="archetypeJustFun">just for fun</span>
+      </div>
+      <p class="text-xs text-amber-200/80 mb-3 leading-relaxed bg-amber-400/5 border border-amber-400/10 rounded-xl p-3 relative" id="warnArchetype">
+        <button onclick="dismissWarning('warnArchetype')" class="absolute top-2 right-2 text-amber-200/50 hover:text-amber-200 text-sm leading-none w-5 h-5 flex items-center justify-center">✕</button>
+        <span class="block pr-6" data-i18n="archetypeWarn">This is a simple, deterministic pattern-match on your own last-7-days averages —
+        six fixed rules, no AI, no psychological assessment. You can read the exact rules in this
+        page's source. It's a playful mirror, not an insight engine.</span>
+      </p>
+      <div id="archetypeResult" class="text-center py-6">
+        <div class="text-3xl font-black text-pink-300" id="archetypeName">—</div>
+        <div class="text-sm text-slate-400 mt-1" id="archetypeDesc" data-i18n="archetypeEmpty">seal at least 3 entries this week to reveal yours</div>
+      </div>
+    </div>
+
+    <!-- CLIMATE CORRELATION -->
+    <div class="glass rounded-3xl p-6 mt-6 border border-sky-400/20">
+      <h3 class="font-bold mb-2 text-sm text-sky-300" data-i18n="climateTitle">☀️ Climate Correlation</h3>
+      <p class="text-xs text-amber-200/80 mb-3 leading-relaxed bg-amber-400/5 border border-amber-400/10 rounded-xl p-3 relative" id="warnClimate">
+        <button onclick="dismissWarning('warnClimate')" class="absolute top-2 right-2 text-amber-200/50 hover:text-amber-200 text-sm leading-none w-5 h-5 flex items-center justify-center">✕</button>
+        <span class="block pr-6" data-i18n="climateWarn">🌍 <strong>This one needs your location.</strong> If you enable it, your coordinates
+        are sent to Open-Meteo (open-source, no account, no key, no ad-tracking) to fetch current
+        weather and air quality — nothing else uses your location, and it's not stored by us.</span>
+      </p>
+      <button onclick="enableClimateCorrelation()" id="climateBtn"
+        class="w-full glass border border-sky-400/30 text-sky-300 font-bold py-3 rounded-2xl hover:bg-sky-400/10 transition" data-i18n="climateBtnText">
+        Enable climate correlation
+      </button>
+      <div id="climateResult" class="mt-4 hidden">
+        <div class="grid grid-cols-3 gap-2 text-center text-sm">
+          <div class="glass rounded-xl p-3"><div class="text-xl font-bold" id="climateTemp">—</div><div class="text-xs text-slate-500">°C</div></div>
+          <div class="glass rounded-xl p-3"><div class="text-xl font-bold" id="climatePM25">—</div><div class="text-xs text-slate-500">PM2.5</div></div>
+          <div class="glass rounded-xl p-3"><div class="text-xl font-bold" id="climateDaylight">—</div><div class="text-xs text-slate-500" data-i18n="climateDaylightLabel">daylight hrs</div></div>
+        </div>
+        <p class="text-xs text-slate-500 mt-3 text-center" id="climateNote"></p>
+      </div>
+      <p class="text-xs text-slate-600 mt-2" id="climateStatus"></p>
+    </div>
+
+    <!-- LEGACY TIME CAPSULES -->
+    <div class="glass rounded-3xl p-6 mt-6 border border-violet-400/20">
+      <h3 class="font-bold mb-2 text-sm text-violet-300" data-i18n="capsuleTitle">⏳ Legacy Time Capsule</h3>
+      <p class="text-xs text-amber-200/80 mb-3 leading-relaxed bg-amber-400/5 border border-amber-400/10 rounded-xl p-3 relative" id="warnCapsule">
+        <button onclick="dismissWarning('warnCapsule')" class="absolute top-2 right-2 text-amber-200/50 hover:text-amber-200 text-sm leading-none w-5 h-5 flex items-center justify-center">✕</button>
+        <span class="block pr-6" data-i18n="capsuleWarn">🔓 <strong>Honest limit:</strong> this is a UI promise, not a cryptographic vault.
+        The message is signed (so you can prove it wasn't altered later), but the "locked until" date is
+        just a check in this page's code — anyone who edits their browser storage or system clock could
+        open it early. Real enforced time-locks need a trusted external clock, which this app doesn't have yet.</span>
+      </p>
+      <textarea id="capsuleMessage" data-i18n-placeholder="capsulePlaceholder" placeholder="A message to your future self (or someone else)..."
+        class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm mb-3 resize-none" rows="2"></textarea>
+      <input type="date" id="capsuleDate" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm mb-3">
+      <button onclick="sealCapsule()" class="w-full glass border border-violet-400/30 text-violet-300 font-bold py-3 rounded-2xl hover:bg-violet-400/10 transition" data-i18n="capsuleBtn">
+        Seal this capsule →
+      </button>
+      <p class="text-xs text-slate-600 mt-2 text-center" id="capsuleStatus"></p>
+      <div id="capsulesList" class="mt-4 space-y-2 text-sm"></div>
+    </div>
+
+    <div class="glass rounded-3xl p-6 mt-6 border border-amber-400/20">
+      <h3 class="font-bold mb-2 text-sm text-amber-300" data-i18n="proofTitle">📦 Export your Proof Pack</h3>
+      <p class="text-xs text-slate-400 mb-4 leading-relaxed" data-i18n-html="proofDesc">
+        A single file with every sealed entry, your public key, and nothing else. Anyone —
+        an employer wellness program, an insurer, a therapist, a skeptical friend — can verify
+        every entry is real and untampered, <strong class="text-slate-300">without trusting us or our server</strong>.
+        Open <code class="text-amber-300">verifier.html</code> (works completely offline) and drop this file in.
+      </p>
+      <button onclick="exportProofPack()" id="exportBtn"
+        class="w-full glass border border-amber-400/30 text-amber-300 font-bold py-3 rounded-2xl hover:bg-amber-400/10 transition" data-i18n="proofBtn">
+        ⬇ Download Proof Pack (.json)
+      </button>
+      <p class="text-xs text-slate-600 mt-3 text-center" id="exportStatus"></p>
+    </div>
+
+    <!-- COMPANION CHAT - separat vizual de jurnal, cu avertisment explicit -->
+    <div class="glass rounded-3xl p-6 mt-6 border border-purple-400/20">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="font-bold text-sm text-purple-300" data-i18n="chatTitle">💬 Talk to your companion</h3>
+        <button onclick="toggleVoice()" id="voiceToggle" class="text-xs glass px-3 py-1 rounded-full hover:bg-white/10" data-i18n="voiceOn">
+          🔊 voice on
+        </button>
+      </div>
+      <p class="text-xs text-amber-200/80 mb-2 leading-relaxed bg-amber-400/5 border border-amber-400/10 rounded-xl p-3 relative" id="warnChat">
+        <button onclick="dismissWarning('warnChat')" class="absolute top-2 right-2 text-amber-200/50 hover:text-amber-200 text-sm leading-none w-5 h-5 flex items-center justify-center">✕</button>
+        <span class="block pr-6" data-i18n="chatWarn">⚠️ <strong>Different from your journal above.</strong> Your sliders and notes stay sealed,
+        local, never transmitted. Messages you type here <strong>do leave your device</strong> —
+        they're sent to an AI model to generate a reply. Every reply is safety-checked and
+        cryptographically signed before you see it, but this is a conversation, not a sealed record.</span>
+      </p>
+      <p class="text-xs text-amber-200/80 mb-4 leading-relaxed bg-amber-400/5 border border-amber-400/10 rounded-xl p-3 relative" id="warnMic">
+        <button onclick="dismissWarning('warnMic')" class="absolute top-2 right-2 text-amber-200/50 hover:text-amber-200 text-sm leading-none w-5 h-5 flex items-center justify-center">✕</button>
+        <span class="block pr-6" data-i18n="micWarn">🎙️ <strong>About the microphone:</strong> the companion's spoken replies are synthesized
+        entirely on your device (no audio sent anywhere for that part). Voice <em>input</em> is different —
+        most browsers (Chrome, Safari) send your recorded voice to Google's or Apple's servers to convert
+        it to text, same as any website's dictation feature. Where your browser supports fully on-device
+        recognition, this page uses it automatically and tells you so below.</span>
+      </p>
+
+      <div id="chatMessages" class="space-y-3 mb-4 max-h-72 overflow-y-auto"></div>
+
+      <div class="flex gap-2">
+        <input type="text" id="chatInput" data-i18n-placeholder="chatPlaceholder" placeholder="How's your energy today?"
+          class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm"
+          onkeydown="if(event.key==='Enter') sendChatMessage()">
+        <button onclick="toggleMic()" id="micBtn"
+          class="glass border border-purple-400/30 text-purple-300 font-bold px-4 rounded-xl hover:bg-purple-400/10 transition">
+          🎙️
+        </button>
+        <button onclick="sendChatMessage()" id="chatSendBtn"
+          class="bg-gradient-to-r from-purple-400 to-indigo-500 text-white font-bold px-5 rounded-xl hover:scale-105 transition">
+          →
+        </button>
+      </div>
+      <p class="text-xs text-slate-600 mt-3" id="chatStatus"></p>
+      <p class="text-xs text-slate-600 mt-1" id="micStatus"></p>
+    </div>
+  </section>
+
+  <footer class="max-w-4xl mx-auto px-6 pb-16">
+    <div class="glass rounded-2xl p-5 text-sm text-amber-200/90 mb-8" data-i18n-html="footerDisclaimer">
+      <strong>Not a medical device.</strong> amiQiAI is a self-reflection and energy-awareness journal.
+      It does not diagnose, treat, or replace professional medical or mental health advice.
+      If you're struggling, please talk to a doctor or a trusted professional.
+    </div>
+    <div class="text-center text-slate-600 text-xs" data-i18n="footerCopy">
+      © amiQiAI · sealed with real ECDSA P-256 (Web Crypto API) · your data never leaves your device
+    </div>
+  </footer>
+
+</div>
+
+<script>
+function scrollToApp() { document.getElementById('app').scrollIntoView({ behavior: 'smooth' }); }
+function scrollToHow() { document.getElementById('how').scrollIntoView({ behavior: 'smooth' }); }
+
+['energy','mood','sleep'].forEach(id => {
+  const slider = document.getElementById(id+'Slider');
+  const val = document.getElementById(id+'Val');
+  slider.addEventListener('input', () => val.textContent = slider.value);
+});
+
+// ============================================================
+// I18N - RO/EN/FR/DE/ES/IT. Traducem tot ce e text de interfata;
+// NU traducem ce scrie utilizatorul (notite, narative, mesaje de
+// capsula) - alea sunt cuvintele lui, nu ale interfetei.
+// ============================================================
+const TRANSLATIONS = {
+  en: {
+    navTry: "Try it free",
+    heroBadge: "your data, sealed — not sold",
+    heroTitle1: "Track your energy",
+    heroTitle2: "like it's actually yours.",
+    heroSub: "Not another wellness app selling your mood data. Every check-in gets <strong class=\"text-white\">cryptographically sealed</strong> — verifiable proof it's real, tamper-proof, yours.",
+    heroCta1: "Start your streak →",
+    heroCta2: "See how it works",
+    statLocal: "local & yours",
+    statStreak: "day streak",
+    statRealWord: "real",
+    statCrypto: "crypto, not fake ✨",
+    marquee1: "⚡ ENERGY OVER PERFECTION",
+    marquee2: "🔒 SEALED, NOT SURVEILLED",
+    marquee3: "🌙 SLEEP · MOOD · VIBE",
+    marquee4: "✨ NO ACCOUNT NEEDED",
+    whyTitle: "Why this hits different",
+    whySub: "No other tracker does this part 👇",
+    card1Title: "Real signatures, not fake badges",
+    card1Desc: "Every entry gets an actual ECDSA P-256 signature (native Web Crypto API — the same primitive behind TLS/HTTPS). Try it below, right now.",
+    card2Title: "Feels like a game, not a chore",
+    card2Desc: "Sliders, streaks, instant seal animation. Built for people who grew up dragging bars in Roblox, not filling out spreadsheets.",
+    card3Title: "Zero data harvesting",
+    card3Desc: "No account, no server storing your feelings. Everything lives in this browser's local storage — export or wipe it anytime.",
+    compareTitle: "amiQiAI vs. the usual mood app",
+    compareTypical: "Typical app",
+    compareRow1: "Sells your data", compareRow1Us: "❌ never", compareRow1Them: "usually 👀",
+    compareRow2: "Cryptographic proof", compareRow2Us: "✅ real ECDSA",
+    compareRow3: "Needs signup", compareRow3Us: "✅ nope", compareRow3Them: "always",
+    compareRow4: "Medical claims", compareRow4Us: "❌ we don't diagnose", compareRow4Them: "\"AI health insights\" 🚩",
+    journalTitle: "Your first seal takes 20 seconds",
+    journalSub: "Drag, jot a note, tap seal. Real ECDSA P-256, right here.",
+    keyGenerating: "generating your signing key...",
+    sliderEnergy: "⚡ Energy", sliderMood: "🙂 Mood", sliderSleep: "🌙 Sleep quality",
+    notePlaceholder: "Optional note (what's driving today's energy?)",
+    sealBtnText: "Seal today's entry →",
+    journalListTitle: "Your sealed journal",
+    noEntriesYet: "no entries yet — seal your first one above",
+    chapterTitle: "📖 Seal a Life Chapter",
+    chapterDesc: "Bundle a period of entries into one signed chapter — averages, entry count, and a note in your own words. Meant for therapy, reflection years from now, or handing someone a real record instead of a vague memory.",
+    chapterPlaceholder: "What defined this period? (optional)",
+    chapterBtn: "Seal all entries so far as a Chapter →",
+    rhythmTitle: "🌊 Seasonal Rhythm (last 90 days)",
+    rhythmDesc: "Weekly average energy, from your sealed entries — not daily noise, the actual pattern.",
+    rhythmEmpty: "seal a few entries across different weeks to see this fill in",
+    archetypeTitle: "🎭 Your Energy Archetype",
+    archetypeJustFun: "just for fun",
+    archetypeWarn: "This is a simple, deterministic pattern-match on your own last-7-days averages — six fixed rules, no AI, no psychological assessment. You can read the exact rules in this page's source. It's a playful mirror, not an insight engine.",
+    archetypeEmpty: "seal at least 3 entries this week to reveal yours",
+    climateTitle: "☀️ Climate Correlation",
+    climateWarn: "🌍 <strong>This one needs your location.</strong> If you enable it, your coordinates are sent to Open-Meteo (open-source, no account, no key, no ad-tracking) to fetch current weather and air quality — nothing else uses your location, and it's not stored by us.",
+    climateBtnText: "Enable climate correlation",
+    climateDaylightLabel: "daylight hrs",
+    capsuleTitle: "⏳ Legacy Time Capsule",
+    capsuleWarn: "🔓 <strong>Honest limit:</strong> this is a UI promise, not a cryptographic vault. The message is signed (so you can prove it wasn't altered later), but the \"locked until\" date is just a check in this page's code — anyone who edits their browser storage or system clock could open it early. Real enforced time-locks need a trusted external clock, which this app doesn't have yet.",
+    capsulePlaceholder: "A message to your future self (or someone else)...",
+    capsuleBtn: "Seal this capsule →",
+    proofTitle: "📦 Export your Proof Pack",
+    proofDesc: "A single file with every sealed entry, your public key, and nothing else. Anyone — an employer wellness program, an insurer, a therapist, a skeptical friend — can verify every entry is real and untampered, <strong class=\"text-slate-300\">without trusting us or our server</strong>. Open <code class=\"text-amber-300\">verifier.html</code> (works completely offline) and drop this file in.",
+    proofBtn: "⬇ Download Proof Pack (.json)",
+    chatTitle: "💬 Talk to your companion",
+    voiceOn: "🔊 voice on", voiceOff: "🔇 voice off",
+    chatWarn: "⚠️ <strong>Different from your journal above.</strong> Your sliders and notes stay sealed, local, never transmitted. Messages you type here <strong>do leave your device</strong> — they're sent to an AI model to generate a reply. Every reply is safety-checked and cryptographically signed before you see it, but this is a conversation, not a sealed record.",
+    micWarn: "🎙️ <strong>About the microphone:</strong> the companion's spoken replies are synthesized entirely on your device (no audio sent anywhere for that part). Voice <em>input</em> is different — most browsers (Chrome, Safari) send your recorded voice to Google's or Apple's servers to convert it to text, same as any website's dictation feature. Where your browser supports fully on-device recognition, this page uses it automatically and tells you so below.",
+    chatPlaceholder: "How's your energy today?",
+    footerDisclaimer: "<strong>Not a medical device.</strong> amiQiAI is a self-reflection and energy-awareness journal. It does not diagnose, treat, or replace professional medical or mental health advice. If you're struggling, please talk to a doctor or a trusted professional.",
+    footerCopy: "© amiQiAI · sealed with real ECDSA P-256 (Web Crypto API) · your data never leaves your device",
+    // dinamice
+    keyReady: "signing key ready — stored only in this browser",
+    sealedVerified: "✓ Sealed & verified, live",
+    sigLabel: "Signature (ECDSA P-256):",
+    selfCheck: "Self-check:", valid: "VALID", invalid: "INVALID",
+    chapterNoEntries: "No entries to seal yet.",
+    chapterSealed: "✓ Chapter sealed — {count} entries, signed.",
+    entriesLabel: "entries",
+    weeksLabel: "week(s)",
+    archName1: "The Sprinter", archDesc1: "high drive, running on little rest",
+    archName2: "The Anchor", archDesc2: "steady, well-rested, consistent",
+    archName3: "Flow State", archDesc3: "energy and mood aligned",
+    archName4: "Winter Phase", archDesc4: "a slower stretch — not a diagnosis, just a pattern",
+    archName5: "Running on Fumes", archDesc5: "sleep is the bottleneck right now",
+    archName6: "In Between", archDesc6: "no strong pattern this week yet",
+    archetypeBasedOn: "(based on {count} entries this week)",
+    climateNoGeo: "Geolocation not supported in this browser.",
+    climateRequesting: "Requesting location permission...",
+    climateFetching: "Fetching weather for your location...",
+    climateFetched: "✓ Fetched from Open-Meteo, just now.",
+    climateFailed: "Could not reach Open-Meteo: {msg}",
+    climateDenied: "Location permission denied or unavailable.",
+    climateNoteWithAvg: "Your last-7-days average energy: {avg}/10 — side by side, no claim of causation, just context.",
+    climateNoteEmpty: "Seal a few entries to see this next to your energy trend.",
+    capsuleNeedBoth: "Write a message and pick a date.",
+    capsuleSealed: "✓ Sealed, locked until {date}.",
+    capsuleLocked: "🔒 locked",
+    capsuleOpensIn: "opens in {days} day(s), {date}",
+    capsuleUnlocked: "🔓 unlocked {date}",
+    exportNoEntries: "Seal at least one entry first.",
+    exportDone: "✓ Downloaded {count} verified entries. Open verifier.html to check them.",
+    micNotSupported: "Voice input not supported in this browser — type instead.",
+    micLocal: "🔒 Listening — processed on-device, nothing sent anywhere.",
+    micCloud: "☁️ Listening — your browser will send this recording to its speech service (Google/Apple) to convert to text.",
+    micErrorPrefix: "Voice input error:",
+    chatThinking: "thinking...",
+    chatUnavailable: "Companion unavailable: {detail}",
+    chatUnreachable: "Could not reach companion backend ({base}). Is it deployed?",
+    signedWord: "signed",
+  },
+  ro: {
+    navTry: "Încearcă gratuit",
+    heroBadge: "datele tale, sigilate — nu vândute",
+    heroTitle1: "Urmărește-ți energia",
+    heroTitle2: "ca și cum ar fi chiar a ta.",
+    heroSub: "Nu încă o aplicație de wellness care-ți vinde datele despre dispoziție. Fiecare notare primește o <strong class=\"text-white\">sigilare criptografică</strong> — dovadă verificabilă că e reală, neatinsă, a ta.",
+    heroCta1: "Începe-ți seria →",
+    heroCta2: "Vezi cum funcționează",
+    statLocal: "local, al tău",
+    statStreak: "zile la rând",
+    statRealWord: "real",
+    statCrypto: "crypto real, nu fals ✨",
+    marquee1: "⚡ ENERGIA ÎNAINTEA PERFECȚIUNII",
+    marquee2: "🔒 SIGILAT, NU SUPRAVEGHEAT",
+    marquee3: "🌙 SOMN · DISPOZIȚIE · STARE",
+    marquee4: "✨ FĂRĂ CONT NECESAR",
+    whyTitle: "De ce e altfel",
+    whySub: "Niciun alt tracker nu face partea asta 👇",
+    card1Title: "Semnături reale, nu badge-uri false",
+    card1Desc: "Fiecare intrare primește o semnătură ECDSA P-256 reală (Web Crypto API nativ — același principiu din spatele TLS/HTTPS). Încearcă mai jos, chiar acum.",
+    card2Title: "Se simte ca un joc, nu ca o corvoadă",
+    card2Desc: "Sliders, serii de zile, animație instant de sigilare. Construit pentru oameni care au crescut trăgând bare în Roblox, nu completând tabele.",
+    card3Title: "Zero colectare de date",
+    card3Desc: "Fără cont, fără server care stochează ce simți. Totul rămâne în stocarea locală a browserului — exportă sau șterge oricând.",
+    compareTitle: "amiQiAI vs. o aplicație obișnuită de dispoziție",
+    compareTypical: "Aplicație obișnuită",
+    compareRow1: "Îți vinde datele", compareRow1Us: "❌ niciodată", compareRow1Them: "de obicei 👀",
+    compareRow2: "Dovadă criptografică", compareRow2Us: "✅ ECDSA real",
+    compareRow3: "Cere cont", compareRow3Us: "✅ nu", compareRow3Them: "mereu",
+    compareRow4: "Afirmații medicale", compareRow4Us: "❌ nu punem diagnostice", compareRow4Them: "\"insight-uri AI de sănătate\" 🚩",
+    journalTitle: "Prima ta sigilare durează 20 de secunde",
+    journalSub: "Trage, scrie o notiță, apasă sigilează. ECDSA P-256 real, chiar aici.",
+    keyGenerating: "se generează cheia ta de semnare...",
+    sliderEnergy: "⚡ Energie", sliderMood: "🙂 Dispoziție", sliderSleep: "🌙 Calitatea somnului",
+    notePlaceholder: "Notiță opțională (ce influențează energia de azi?)",
+    sealBtnText: "Sigilează intrarea de azi →",
+    journalListTitle: "Jurnalul tău sigilat",
+    noEntriesYet: "nicio intrare încă — sigilează prima mai sus",
+    chapterTitle: "📖 Sigilează un Capitol de Viață",
+    chapterDesc: "Adună o perioadă de intrări într-un singur capitol semnat — medii, număr de intrări, și o notă în cuvintele tale. Pentru terapie, reflecție peste ani, sau ca să dai cuiva o dovadă reală, nu o amintire vagă.",
+    chapterPlaceholder: "Ce a definit această perioadă? (opțional)",
+    chapterBtn: "Sigilează toate intrările ca un Capitol →",
+    rhythmTitle: "🌊 Ritm Sezonier (ultimele 90 zile)",
+    rhythmDesc: "Media săptămânală de energie, din intrările tale sigilate — nu zgomotul zilnic, tiparul real.",
+    rhythmEmpty: "sigilează câteva intrări în săptămâni diferite ca să vezi asta populat",
+    archetypeTitle: "🎭 Arhetipul tău Energetic",
+    archetypeJustFun: "doar pentru distracție",
+    archetypeWarn: "Asta e o potrivire simplă, deterministă, pe mediile tale din ultimele 7 zile — șase reguli fixe, fără AI, fără evaluare psihologică. Poți citi regulile exacte în sursa acestei pagini. E o oglindă jucăușă, nu un motor de insight-uri.",
+    archetypeEmpty: "sigilează cel puțin 3 intrări săptămâna asta ca să-l afli",
+    climateTitle: "☀️ Corelație Climatică",
+    climateWarn: "🌍 <strong>Asta are nevoie de locația ta.</strong> Dacă o activezi, coordonatele tale sunt trimise către Open-Meteo (open-source, fără cont, fără cheie, fără urmărire publicitară) ca să obții vremea și calitatea aerului curent — nimic altceva nu-ți folosește locația, și nu e stocată de noi.",
+    climateBtnText: "Activează corelația climatică",
+    climateDaylightLabel: "ore de lumină",
+    capsuleTitle: "⏳ Capsulă de Timp - Moștenire",
+    capsuleWarn: "🔓 <strong>Limită onestă:</strong> asta e o promisiune de interfață, nu un seif criptografic. Mesajul e semnat (deci poți dovedi că nu a fost alterat ulterior), dar data de \"blocat până la\" e doar o verificare în codul paginii — oricine își editează stocarea browserului sau ceasul sistemului ar putea s-o deschidă mai devreme. Un blocaj temporal real, aplicat, are nevoie de un ceas extern de încredere, pe care aplicația asta nu-l are încă.",
+    capsulePlaceholder: "Un mesaj pentru tine din viitor (sau pentru altcineva)...",
+    capsuleBtn: "Sigilează această capsulă →",
+    proofTitle: "📦 Exportă-ți Pachetul de Dovadă",
+    proofDesc: "Un singur fișier cu fiecare intrare sigilată, cheia ta publică, și nimic altceva. Oricine — un program de wellness al angajatorului, un asigurător, un terapeut, un prieten sceptic — poate verifica că fiecare intrare e reală și neatinsă, <strong class=\"text-slate-300\">fără să aibă încredere în noi sau în serverul nostru</strong>. Deschide <code class=\"text-amber-300\">verifier.html</code> (funcționează complet offline) și trage fișierul acolo.",
+    proofBtn: "⬇ Descarcă Pachetul de Dovadă (.json)",
+    chatTitle: "💬 Vorbește cu companionul tău",
+    voiceOn: "🔊 voce pornită", voiceOff: "🔇 voce oprită",
+    chatWarn: "⚠️ <strong>Diferit de jurnalul de mai sus.</strong> Sliderele și notițele tale rămân sigilate, locale, netransmise niciodată. Mesajele scrise aici <strong>chiar pleacă de pe dispozitiv</strong> — sunt trimise către un model AI ca să genereze un răspuns. Fiecare răspuns e verificat de siguranță și semnat criptografic înainte să-l vezi, dar asta e o conversație, nu o înregistrare sigilată.",
+    micWarn: "🎙️ <strong>Despre microfon:</strong> răspunsurile vorbite ale companionului sunt sintetizate complet pe dispozitivul tău (niciun audio trimis nicăieri pentru asta). Intrarea vocală e diferită — majoritatea browserelor (Chrome, Safari) trimit vocea înregistrată către serverele Google sau Apple ca s-o transforme în text, la fel ca orice funcție de dictare web. Unde browserul tău suportă recunoaștere complet locală, pagina o folosește automat și te anunță mai jos.",
+    chatPlaceholder: "Cum e energia ta azi?",
+    footerDisclaimer: "<strong>Nu e un dispozitiv medical.</strong> amiQiAI e un jurnal de auto-reflecție și conștientizare a energiei. Nu diagnostichează, nu tratează, și nu înlocuiește sfatul medical sau de sănătate mintală profesional. Dacă treci prin ceva greu, vorbește cu un doctor sau un profesionist de încredere.",
+    footerCopy: "© amiQiAI · sigilat cu ECDSA P-256 real (Web Crypto API) · datele tale nu pleacă niciodată de pe dispozitiv",
+    keyReady: "cheie de semnare gata — stocată doar în acest browser",
+    sealedVerified: "✓ Sigilat și verificat, live",
+    sigLabel: "Semnătură (ECDSA P-256):",
+    selfCheck: "Auto-verificare:", valid: "VALIDĂ", invalid: "INVALIDĂ",
+    chapterNoEntries: "Nicio intrare de sigilat încă.",
+    chapterSealed: "✓ Capitol sigilat — {count} intrări, semnat.",
+    entriesLabel: "intrări",
+    weeksLabel: "săptămână(i)",
+    archName1: "Sprinterul", archDesc1: "energie mare, funcționând pe puțină odihnă",
+    archName2: "Ancora", archDesc2: "constant, odihnit, stabil",
+    archName3: "Stare de Flux", archDesc3: "energie și dispoziție aliniate",
+    archName4: "Faza de Iarnă", archDesc4: "o perioadă mai lentă — nu un diagnostic, doar un tipar",
+    archName5: "Pe Rezervă", archDesc5: "somnul e blocajul principal acum",
+    archName6: "La Mijloc", archDesc6: "niciun tipar puternic săptămâna asta încă",
+    archetypeBasedOn: "(bazat pe {count} intrări săptămâna asta)",
+    climateNoGeo: "Geolocația nu e suportată în acest browser.",
+    climateRequesting: "Se cere permisiunea de locație...",
+    climateFetching: "Se obține vremea pentru locația ta...",
+    climateFetched: "✓ Obținut de la Open-Meteo, chiar acum.",
+    climateFailed: "Nu s-a putut contacta Open-Meteo: {msg}",
+    climateDenied: "Permisiune de locație refuzată sau indisponibilă.",
+    climateNoteWithAvg: "Media ta de energie din ultimele 7 zile: {avg}/10 — alăturat, fără nicio pretenție de cauzalitate, doar context.",
+    climateNoteEmpty: "Sigilează câteva intrări ca să vezi asta lângă tendința ta de energie.",
+    capsuleNeedBoth: "Scrie un mesaj și alege o dată.",
+    capsuleSealed: "✓ Sigilată, blocată până la {date}.",
+    capsuleLocked: "🔒 blocată",
+    capsuleOpensIn: "se deschide în {days} zi(le), {date}",
+    capsuleUnlocked: "🔓 deblocată {date}",
+    exportNoEntries: "Sigilează măcar o intrare mai întâi.",
+    exportDone: "✓ Descărcate {count} intrări verificate. Deschide verifier.html ca să le verifici.",
+    micNotSupported: "Intrarea vocală nu e suportată în acest browser — scrie în loc.",
+    micLocal: "🔒 Ascult — procesat local, nimic trimis nicăieri.",
+    micCloud: "☁️ Ascult — browserul tău va trimite această înregistrare către serviciul lui de voce (Google/Apple) ca s-o transforme în text.",
+    micErrorPrefix: "Eroare intrare vocală:",
+    chatThinking: "se gândește...",
+    chatUnavailable: "Companion indisponibil: {detail}",
+    chatUnreachable: "Nu s-a putut contacta backend-ul companion-ului ({base}). E activat?",
+    signedWord: "semnat",
+  },
+  fr: {
+    navTry: "Essayer gratuitement",
+    heroBadge: "vos données, scellées — pas vendues",
+    heroTitle1: "Suivez votre énergie",
+    heroTitle2: "comme si elle vous appartenait vraiment.",
+    heroSub: "Pas une énième appli bien-être qui vend vos données d'humeur. Chaque entrée est <strong class=\"text-white\">scellée cryptographiquement</strong> — preuve vérifiable qu'elle est réelle, infalsifiable, à vous.",
+    heroCta1: "Commencez votre série →",
+    heroCta2: "Voir comment ça marche",
+    statLocal: "local, à vous",
+    statStreak: "jours de suite",
+    statRealWord: "réel",
+    statCrypto: "vraie crypto, pas fausse ✨",
+    marquee1: "⚡ L'ÉNERGIE AVANT LA PERFECTION",
+    marquee2: "🔒 SCELLÉ, PAS SURVEILLÉ",
+    marquee3: "🌙 SOMMEIL · HUMEUR · VIBE",
+    marquee4: "✨ AUCUN COMPTE REQUIS",
+    whyTitle: "Pourquoi c'est différent",
+    whySub: "Aucun autre tracker ne fait ça 👇",
+    card1Title: "De vraies signatures, pas des badges factices",
+    card1Desc: "Chaque entrée reçoit une vraie signature ECDSA P-256 (Web Crypto API native — le même principe derrière TLS/HTTPS). Essayez ci-dessous, maintenant.",
+    card2Title: "Ça ressemble à un jeu, pas à une corvée",
+    card2Desc: "Curseurs, séries, animation de scellement instantanée. Conçu pour ceux qui ont grandi en glissant des barres dans Roblox, pas en remplissant des tableurs.",
+    card3Title: "Zéro collecte de données",
+    card3Desc: "Pas de compte, pas de serveur qui stocke vos ressentis. Tout reste dans le stockage local du navigateur — exportez ou effacez à tout moment.",
+    compareTitle: "amiQiAI vs. une appli d'humeur classique",
+    compareTypical: "Appli classique",
+    compareRow1: "Vend vos données", compareRow1Us: "❌ jamais", compareRow1Them: "souvent 👀",
+    compareRow2: "Preuve cryptographique", compareRow2Us: "✅ vraie ECDSA",
+    compareRow3: "Nécessite un compte", compareRow3Us: "✅ non", compareRow3Them: "toujours",
+    compareRow4: "Prétentions médicales", compareRow4Us: "❌ on ne diagnostique pas", compareRow4Them: "\"insights IA santé\" 🚩",
+    journalTitle: "Votre premier scellement prend 20 secondes",
+    journalSub: "Glissez, notez, scellez. Vraie ECDSA P-256, ici même.",
+    keyGenerating: "génération de votre clé de signature...",
+    sliderEnergy: "⚡ Énergie", sliderMood: "🙂 Humeur", sliderSleep: "🌙 Qualité du sommeil",
+    notePlaceholder: "Note optionnelle (qu'est-ce qui influence votre énergie aujourd'hui ?)",
+    sealBtnText: "Sceller l'entrée du jour →",
+    journalListTitle: "Votre journal scellé",
+    noEntriesYet: "aucune entrée encore — scellez la première ci-dessus",
+    chapterTitle: "📖 Sceller un Chapitre de Vie",
+    chapterDesc: "Regroupez une période d'entrées en un seul chapitre signé — moyennes, nombre d'entrées, et une note dans vos propres mots. Pour la thérapie, la réflexion dans des années, ou pour donner à quelqu'un une preuve réelle au lieu d'un souvenir vague.",
+    chapterPlaceholder: "Qu'est-ce qui a défini cette période ? (optionnel)",
+    chapterBtn: "Sceller toutes les entrées en Chapitre →",
+    rhythmTitle: "🌊 Rythme Saisonnier (90 derniers jours)",
+    rhythmDesc: "Énergie moyenne hebdomadaire, à partir de vos entrées scellées — pas le bruit quotidien, le vrai schéma.",
+    rhythmEmpty: "scellez quelques entrées sur différentes semaines pour voir ceci se remplir",
+    archetypeTitle: "🎭 Votre Archétype Énergétique",
+    archetypeJustFun: "juste pour le plaisir",
+    archetypeWarn: "Ceci est une simple correspondance déterministe sur vos moyennes des 7 derniers jours — six règles fixes, sans IA, sans évaluation psychologique. Vous pouvez lire les règles exactes dans le code source de cette page. C'est un miroir ludique, pas un moteur d'insights.",
+    archetypeEmpty: "scellez au moins 3 entrées cette semaine pour le révéler",
+    climateTitle: "☀️ Corrélation Climatique",
+    climateWarn: "🌍 <strong>Ceci nécessite votre position.</strong> Si vous l'activez, vos coordonnées sont envoyées à Open-Meteo (open-source, sans compte, sans clé, sans pub-tracking) pour obtenir la météo et la qualité de l'air actuelles — rien d'autre n'utilise votre position, et nous ne la stockons pas.",
+    climateBtnText: "Activer la corrélation climatique",
+    climateDaylightLabel: "heures de jour",
+    capsuleTitle: "⏳ Capsule Temporelle Héritage",
+    capsuleWarn: "🔓 <strong>Limite honnête :</strong> ceci est une promesse d'interface, pas un coffre-fort cryptographique. Le message est signé (donc vous pouvez prouver qu'il n'a pas été altéré), mais la date de \"verrouillage\" n'est qu'une vérification dans le code de cette page — quiconque modifie le stockage de son navigateur ou l'horloge système pourrait l'ouvrir plus tôt. Un vrai verrouillage temporel appliqué nécessite une horloge externe de confiance, que cette appli n'a pas encore.",
+    capsulePlaceholder: "Un message pour votre futur vous (ou quelqu'un d'autre)...",
+    capsuleBtn: "Sceller cette capsule →",
+    proofTitle: "📦 Exportez votre Pack de Preuve",
+    proofDesc: "Un seul fichier avec chaque entrée scellée, votre clé publique, et rien d'autre. N'importe qui — un programme bien-être employeur, un assureur, un thérapeute, un ami sceptique — peut vérifier que chaque entrée est réelle et intacte, <strong class=\"text-slate-300\">sans nous faire confiance ni à notre serveur</strong>. Ouvrez <code class=\"text-amber-300\">verifier.html</code> (fonctionne entièrement hors ligne) et déposez ce fichier.",
+    proofBtn: "⬇ Télécharger le Pack de Preuve (.json)",
+    chatTitle: "💬 Parlez à votre compagnon",
+    voiceOn: "🔊 voix activée", voiceOff: "🔇 voix désactivée",
+    chatWarn: "⚠️ <strong>Différent de votre journal ci-dessus.</strong> Vos curseurs et notes restent scellés, locaux, jamais transmis. Les messages tapés ici <strong>quittent bien votre appareil</strong> — ils sont envoyés à un modèle IA pour générer une réponse. Chaque réponse est vérifiée pour la sécurité et signée cryptographiquement avant que vous la voyiez, mais c'est une conversation, pas un enregistrement scellé.",
+    micWarn: "🎙️ <strong>À propos du microphone :</strong> les réponses parlées du compagnon sont synthétisées entièrement sur votre appareil (aucun audio envoyé pour cette partie). L'entrée vocale est différente — la plupart des navigateurs (Chrome, Safari) envoient votre voix enregistrée aux serveurs de Google ou Apple pour la convertir en texte, comme toute fonction de dictée web. Là où votre navigateur supporte la reconnaissance entièrement locale, cette page l'utilise automatiquement et vous le signale ci-dessous.",
+    chatPlaceholder: "Comment est votre énergie aujourd'hui ?",
+    footerDisclaimer: "<strong>Ce n'est pas un dispositif médical.</strong> amiQiAI est un journal d'auto-réflexion et de conscience énergétique. Il ne diagnostique pas, ne traite pas, et ne remplace pas un avis médical ou de santé mentale professionnel. Si vous traversez une période difficile, parlez à un médecin ou un professionnel de confiance.",
+    footerCopy: "© amiQiAI · scellé avec une vraie ECDSA P-256 (Web Crypto API) · vos données ne quittent jamais votre appareil",
+    keyReady: "clé de signature prête — stockée uniquement dans ce navigateur",
+    sealedVerified: "✓ Scellé et vérifié, en direct",
+    sigLabel: "Signature (ECDSA P-256) :",
+    selfCheck: "Auto-vérification :", valid: "VALIDE", invalid: "INVALIDE",
+    chapterNoEntries: "Aucune entrée à sceller pour l'instant.",
+    chapterSealed: "✓ Chapitre scellé — {count} entrées, signé.",
+    entriesLabel: "entrées",
+    weeksLabel: "semaine(s)",
+    archName1: "Le Sprinteur", archDesc1: "grande énergie, fonctionnant avec peu de repos",
+    archName2: "L'Ancre", archDesc2: "stable, bien reposé, constant",
+    archName3: "État de Flux", archDesc3: "énergie et humeur alignées",
+    archName4: "Phase d'Hiver", archDesc4: "une période plus lente — pas un diagnostic, juste un schéma",
+    archName5: "En Réserve", archDesc5: "le sommeil est le goulot d'étranglement en ce moment",
+    archName6: "Entre les Deux", archDesc6: "pas de schéma fort cette semaine encore",
+    archetypeBasedOn: "(basé sur {count} entrées cette semaine)",
+    climateNoGeo: "Géolocalisation non supportée dans ce navigateur.",
+    climateRequesting: "Demande de permission de localisation...",
+    climateFetching: "Récupération de la météo pour votre position...",
+    climateFetched: "✓ Récupéré depuis Open-Meteo, à l'instant.",
+    climateFailed: "Impossible de contacter Open-Meteo : {msg}",
+    climateDenied: "Permission de localisation refusée ou indisponible.",
+    climateNoteWithAvg: "Votre énergie moyenne des 7 derniers jours : {avg}/10 — côte à côte, sans prétention de causalité, juste du contexte.",
+    climateNoteEmpty: "Scellez quelques entrées pour voir ceci à côté de votre tendance énergétique.",
+    capsuleNeedBoth: "Écrivez un message et choisissez une date.",
+    capsuleSealed: "✓ Scellée, verrouillée jusqu'au {date}.",
+    capsuleLocked: "🔒 verrouillée",
+    capsuleOpensIn: "s'ouvre dans {days} jour(s), {date}",
+    capsuleUnlocked: "🔓 déverrouillée {date}",
+    exportNoEntries: "Scellez au moins une entrée d'abord.",
+    exportDone: "✓ {count} entrées vérifiées téléchargées. Ouvrez verifier.html pour les vérifier.",
+    micNotSupported: "Entrée vocale non supportée dans ce navigateur — tapez à la place.",
+    micLocal: "🔒 Écoute — traité localement, rien envoyé nulle part.",
+    micCloud: "☁️ Écoute — votre navigateur enverra cet enregistrement à son service vocal (Google/Apple) pour le convertir en texte.",
+    micErrorPrefix: "Erreur d'entrée vocale :",
+    chatThinking: "réflexion...",
+    chatUnavailable: "Compagnon indisponible : {detail}",
+    chatUnreachable: "Impossible de contacter le backend du compagnon ({base}). Est-il déployé ?",
+    signedWord: "signé",
+  },
+  de: {
+    navTry: "Kostenlos testen",
+    heroBadge: "deine Daten, versiegelt — nicht verkauft",
+    heroTitle1: "Verfolge deine Energie",
+    heroTitle2: "als wäre sie wirklich deine.",
+    heroSub: "Nicht noch eine Wellness-App, die deine Stimmungsdaten verkauft. Jeder Eintrag wird <strong class=\"text-white\">kryptografisch versiegelt</strong> — verifizierbarer Beweis, dass er echt, fälschungssicher und deiner ist.",
+    heroCta1: "Starte deine Serie →",
+    heroCta2: "So funktioniert's",
+    statLocal: "lokal, deins",
+    statStreak: "Tage in Folge",
+    statRealWord: "echt",
+    statCrypto: "echte Krypto, nicht falsch ✨",
+    marquee1: "⚡ ENERGIE VOR PERFEKTION",
+    marquee2: "🔒 VERSIEGELT, NICHT ÜBERWACHT",
+    marquee3: "🌙 SCHLAF · STIMMUNG · VIBE",
+    marquee4: "✨ KEIN KONTO NÖTIG",
+    whyTitle: "Warum das anders ist",
+    whySub: "Kein anderer Tracker macht das 👇",
+    card1Title: "Echte Signaturen, keine falschen Abzeichen",
+    card1Desc: "Jeder Eintrag erhält eine echte ECDSA-P-256-Signatur (native Web Crypto API — dasselbe Prinzip hinter TLS/HTTPS). Probier's unten, jetzt gleich.",
+    card2Title: "Fühlt sich wie ein Spiel an, nicht wie eine Pflicht",
+    card2Desc: "Schieberegler, Serien, sofortige Siegel-Animation. Gemacht für Leute, die mit Balken-Ziehen in Roblox aufgewachsen sind, nicht mit Tabellen ausfüllen.",
+    card3Title: "Null Datensammlung",
+    card3Desc: "Kein Konto, kein Server, der deine Gefühle speichert. Alles bleibt im lokalen Speicher des Browsers — jederzeit exportierbar oder löschbar.",
+    compareTitle: "amiQiAI vs. die übliche Stimmungs-App",
+    compareTypical: "Übliche App",
+    compareRow1: "Verkauft deine Daten", compareRow1Us: "❌ nie", compareRow1Them: "meist 👀",
+    compareRow2: "Kryptografischer Beweis", compareRow2Us: "✅ echtes ECDSA",
+    compareRow3: "Braucht Anmeldung", compareRow3Us: "✅ nein", compareRow3Them: "immer",
+    compareRow4: "Medizinische Behauptungen", compareRow4Us: "❌ wir diagnostizieren nicht", compareRow4Them: "\"KI-Gesundheitseinblicke\" 🚩",
+    journalTitle: "Dein erstes Siegel dauert 20 Sekunden",
+    journalSub: "Ziehen, Notiz schreiben, versiegeln. Echtes ECDSA P-256, genau hier.",
+    keyGenerating: "dein Signaturschlüssel wird generiert...",
+    sliderEnergy: "⚡ Energie", sliderMood: "🙂 Stimmung", sliderSleep: "🌙 Schlafqualität",
+    notePlaceholder: "Optionale Notiz (was beeinflusst deine heutige Energie?)",
+    sealBtnText: "Heutigen Eintrag versiegeln →",
+    journalListTitle: "Dein versiegeltes Journal",
+    noEntriesYet: "noch keine Einträge — versiegle deinen ersten oben",
+    chapterTitle: "📖 Ein Lebenskapitel versiegeln",
+    chapterDesc: "Bündle einen Zeitraum von Einträgen zu einem signierten Kapitel — Durchschnittswerte, Anzahl der Einträge und eine Notiz in deinen eigenen Worten. Gedacht für Therapie, Reflexion in Jahren, oder um jemandem einen echten Nachweis statt einer vagen Erinnerung zu geben.",
+    chapterPlaceholder: "Was hat diese Zeit geprägt? (optional)",
+    chapterBtn: "Alle bisherigen Einträge als Kapitel versiegeln →",
+    rhythmTitle: "🌊 Saisonaler Rhythmus (letzte 90 Tage)",
+    rhythmDesc: "Wöchentliche Durchschnittsenergie aus deinen versiegelten Einträgen — nicht das tägliche Rauschen, das echte Muster.",
+    rhythmEmpty: "versiegle ein paar Einträge über verschiedene Wochen, damit sich das füllt",
+    archetypeTitle: "🎭 Dein Energie-Archetyp",
+    archetypeJustFun: "nur zum Spaß",
+    archetypeWarn: "Dies ist ein einfacher, deterministischer Musterabgleich auf deinen eigenen Durchschnittswerten der letzten 7 Tage — sechs feste Regeln, keine KI, keine psychologische Bewertung. Du kannst die genauen Regeln im Quellcode dieser Seite nachlesen. Es ist ein spielerischer Spiegel, keine Einblick-Engine.",
+    archetypeEmpty: "versiegle mindestens 3 Einträge diese Woche, um ihn aufzudecken",
+    climateTitle: "☀️ Klimakorrelation",
+    climateWarn: "🌍 <strong>Dies benötigt deinen Standort.</strong> Wenn du es aktivierst, werden deine Koordinaten an Open-Meteo gesendet (Open-Source, kein Konto, kein Schlüssel, kein Werbe-Tracking), um aktuelles Wetter und Luftqualität abzurufen — nichts anderes nutzt deinen Standort, und wir speichern ihn nicht.",
+    climateBtnText: "Klimakorrelation aktivieren",
+    climateDaylightLabel: "Tageslichtstunden",
+    capsuleTitle: "⏳ Vermächtnis-Zeitkapsel",
+    capsuleWarn: "🔓 <strong>Ehrliche Grenze:</strong> dies ist ein UI-Versprechen, kein kryptografischer Tresor. Die Nachricht ist signiert (du kannst also beweisen, dass sie später nicht verändert wurde), aber das \"gesperrt bis\"-Datum ist nur eine Prüfung im Code dieser Seite — jeder, der seinen Browser-Speicher oder die Systemuhr ändert, könnte sie früher öffnen. Eine echte erzwungene Zeitsperre braucht eine vertrauenswürdige externe Uhr, die diese App noch nicht hat.",
+    capsulePlaceholder: "Eine Nachricht an dein zukünftiges Ich (oder jemand anderen)...",
+    capsuleBtn: "Diese Kapsel versiegeln →",
+    proofTitle: "📦 Exportiere dein Proof Pack",
+    proofDesc: "Eine einzige Datei mit jedem versiegelten Eintrag, deinem öffentlichen Schlüssel und sonst nichts. Jeder — ein betriebliches Wellness-Programm, ein Versicherer, ein Therapeut, ein skeptischer Freund — kann verifizieren, dass jeder Eintrag echt und unverändert ist, <strong class=\"text-slate-300\">ohne uns oder unserem Server zu vertrauen</strong>. Öffne <code class=\"text-amber-300\">verifier.html</code> (funktioniert komplett offline) und lege diese Datei hinein.",
+    proofBtn: "⬇ Proof Pack herunterladen (.json)",
+    chatTitle: "💬 Sprich mit deinem Begleiter",
+    voiceOn: "🔊 Stimme an", voiceOff: "🔇 Stimme aus",
+    chatWarn: "⚠️ <strong>Anders als dein Journal oben.</strong> Deine Schieberegler und Notizen bleiben versiegelt, lokal, nie übertragen. Nachrichten, die du hier eingibst, <strong>verlassen tatsächlich dein Gerät</strong> — sie werden an ein KI-Modell gesendet, um eine Antwort zu generieren. Jede Antwort wird auf Sicherheit geprüft und kryptografisch signiert, bevor du sie siehst, aber dies ist ein Gespräch, keine versiegelte Aufzeichnung.",
+    micWarn: "🎙️ <strong>Über das Mikrofon:</strong> die gesprochenen Antworten des Begleiters werden vollständig auf deinem Gerät synthetisiert (für diesen Teil wird kein Audio irgendwohin gesendet). Spracheingabe ist anders — die meisten Browser (Chrome, Safari) senden deine aufgenommene Stimme an die Server von Google oder Apple, um sie in Text umzuwandeln, genau wie jede Web-Diktierfunktion. Wo dein Browser vollständig lokale Erkennung unterstützt, nutzt diese Seite sie automatisch und teilt es dir unten mit.",
+    chatPlaceholder: "Wie ist deine Energie heute?",
+    footerDisclaimer: "<strong>Kein medizinisches Gerät.</strong> amiQiAI ist ein Selbstreflexions- und Energiebewusstseins-Journal. Es diagnostiziert nicht, behandelt nicht und ersetzt keine professionelle medizinische oder psychische Beratung. Wenn es dir schwerfällt, sprich bitte mit einem Arzt oder einer vertrauenswürdigen Fachperson.",
+    footerCopy: "© amiQiAI · versiegelt mit echtem ECDSA P-256 (Web Crypto API) · deine Daten verlassen nie dein Gerät",
+    keyReady: "Signaturschlüssel bereit — nur in diesem Browser gespeichert",
+    sealedVerified: "✓ Versiegelt und verifiziert, live",
+    sigLabel: "Signatur (ECDSA P-256):",
+    selfCheck: "Selbstprüfung:", valid: "GÜLTIG", invalid: "UNGÜLTIG",
+    chapterNoEntries: "Noch keine Einträge zum Versiegeln.",
+    chapterSealed: "✓ Kapitel versiegelt — {count} Einträge, signiert.",
+    entriesLabel: "Einträge",
+    weeksLabel: "Woche(n)",
+    archName1: "Der Sprinter", archDesc1: "hoher Antrieb, mit wenig Ruhe unterwegs",
+    archName2: "Der Anker", archDesc2: "stabil, gut ausgeruht, beständig",
+    archName3: "Flow-Zustand", archDesc3: "Energie und Stimmung im Einklang",
+    archName4: "Winterphase", archDesc4: "eine langsamere Phase — keine Diagnose, nur ein Muster",
+    archName5: "Auf Reserve", archDesc5: "Schlaf ist gerade der Engpass",
+    archName6: "Dazwischen", archDesc6: "noch kein starkes Muster diese Woche",
+    archetypeBasedOn: "(basierend auf {count} Einträgen diese Woche)",
+    climateNoGeo: "Geolokalisierung wird in diesem Browser nicht unterstützt.",
+    climateRequesting: "Standortberechtigung wird angefragt...",
+    climateFetching: "Wetter für deinen Standort wird abgerufen...",
+    climateFetched: "✓ Gerade eben von Open-Meteo abgerufen.",
+    climateFailed: "Open-Meteo konnte nicht erreicht werden: {msg}",
+    climateDenied: "Standortberechtigung verweigert oder nicht verfügbar.",
+    climateNoteWithAvg: "Deine durchschnittliche Energie der letzten 7 Tage: {avg}/10 — nebeneinander, ohne Kausalitätsanspruch, nur Kontext.",
+    climateNoteEmpty: "Versiegle ein paar Einträge, um dies neben deinem Energietrend zu sehen.",
+    capsuleNeedBoth: "Schreibe eine Nachricht und wähle ein Datum.",
+    capsuleSealed: "✓ Versiegelt, gesperrt bis {date}.",
+    capsuleLocked: "🔒 gesperrt",
+    capsuleOpensIn: "öffnet in {days} Tag(en), {date}",
+    capsuleUnlocked: "🔓 entsperrt {date}",
+    exportNoEntries: "Versiegle zuerst mindestens einen Eintrag.",
+    exportDone: "✓ {count} verifizierte Einträge heruntergeladen. Öffne verifier.html, um sie zu prüfen.",
+    micNotSupported: "Spracheingabe wird in diesem Browser nicht unterstützt — tippe stattdessen.",
+    micLocal: "🔒 Höre zu — lokal verarbeitet, nichts wird irgendwohin gesendet.",
+    micCloud: "☁️ Höre zu — dein Browser sendet diese Aufnahme an seinen Sprachdienst (Google/Apple), um sie in Text umzuwandeln.",
+    micErrorPrefix: "Spracheingabefehler:",
+    chatThinking: "denkt nach...",
+    chatUnavailable: "Begleiter nicht verfügbar: {detail}",
+    chatUnreachable: "Begleiter-Backend konnte nicht erreicht werden ({base}). Ist es bereitgestellt?",
+    signedWord: "signiert",
+  },
+  es: {
+    navTry: "Pruébalo gratis",
+    heroBadge: "tus datos, sellados — no vendidos",
+    heroTitle1: "Sigue tu energía",
+    heroTitle2: "como si realmente fuera tuya.",
+    heroSub: "No otra app de bienestar que vende tus datos de humor. Cada registro recibe un <strong class=\"text-white\">sellado criptográfico</strong> — prueba verificable de que es real, inalterable, tuyo.",
+    heroCta1: "Empieza tu racha →",
+    heroCta2: "Ver cómo funciona",
+    statLocal: "local y tuyo",
+    statStreak: "días seguidos",
+    statRealWord: "real",
+    statCrypto: "cripto real, no falsa ✨",
+    marquee1: "⚡ ENERGÍA ANTES QUE PERFECCIÓN",
+    marquee2: "🔒 SELLADO, NO VIGILADO",
+    marquee3: "🌙 SUEÑO · HUMOR · VIBRA",
+    marquee4: "✨ SIN CUENTA NECESARIA",
+    whyTitle: "Por qué esto es diferente",
+    whySub: "Ningún otro tracker hace esta parte 👇",
+    card1Title: "Firmas reales, no insignias falsas",
+    card1Desc: "Cada entrada recibe una firma ECDSA P-256 real (Web Crypto API nativa — el mismo principio detrás de TLS/HTTPS). Pruébalo abajo, ahora mismo.",
+    card2Title: "Se siente como un juego, no una tarea",
+    card2Desc: "Deslizadores, rachas, animación instantánea de sellado. Hecho para quienes crecieron arrastrando barras en Roblox, no llenando hojas de cálculo.",
+    card3Title: "Cero recolección de datos",
+    card3Desc: "Sin cuenta, sin servidor que almacene tus sentimientos. Todo vive en el almacenamiento local de tu navegador — expórtalo o bórralo cuando quieras.",
+    compareTitle: "amiQiAI vs. la app de humor típica",
+    compareTypical: "App típica",
+    compareRow1: "Vende tus datos", compareRow1Us: "❌ nunca", compareRow1Them: "normalmente 👀",
+    compareRow2: "Prueba criptográfica", compareRow2Us: "✅ ECDSA real",
+    compareRow3: "Necesita registro", compareRow3Us: "✅ no", compareRow3Them: "siempre",
+    compareRow4: "Afirmaciones médicas", compareRow4Us: "❌ no diagnosticamos", compareRow4Them: "\"insights de IA de salud\" 🚩",
+    journalTitle: "Tu primer sellado toma 20 segundos",
+    journalSub: "Desliza, anota, sella. ECDSA P-256 real, aquí mismo.",
+    keyGenerating: "generando tu clave de firma...",
+    sliderEnergy: "⚡ Energía", sliderMood: "🙂 Humor", sliderSleep: "🌙 Calidad del sueño",
+    notePlaceholder: "Nota opcional (¿qué influye en tu energía hoy?)",
+    sealBtnText: "Sellar la entrada de hoy →",
+    journalListTitle: "Tu diario sellado",
+    noEntriesYet: "aún no hay entradas — sella la primera arriba",
+    chapterTitle: "📖 Sellar un Capítulo de Vida",
+    chapterDesc: "Agrupa un período de entradas en un capítulo firmado — promedios, número de entradas, y una nota en tus propias palabras. Para terapia, reflexión dentro de años, o para darle a alguien un registro real en lugar de un recuerdo vago.",
+    chapterPlaceholder: "¿Qué definió este período? (opcional)",
+    chapterBtn: "Sellar todas las entradas como un Capítulo →",
+    rhythmTitle: "🌊 Ritmo Estacional (últimos 90 días)",
+    rhythmDesc: "Energía promedio semanal, de tus entradas selladas — no el ruido diario, el patrón real.",
+    rhythmEmpty: "sella algunas entradas en diferentes semanas para ver esto llenarse",
+    archetypeTitle: "🎭 Tu Arquetipo Energético",
+    archetypeJustFun: "solo por diversión",
+    archetypeWarn: "Esto es una simple coincidencia determinista con tus propios promedios de los últimos 7 días — seis reglas fijas, sin IA, sin evaluación psicológica. Puedes leer las reglas exactas en el código fuente de esta página. Es un espejo lúdico, no un motor de insights.",
+    archetypeEmpty: "sella al menos 3 entradas esta semana para revelarlo",
+    climateTitle: "☀️ Correlación Climática",
+    climateWarn: "🌍 <strong>Esto necesita tu ubicación.</strong> Si lo activas, tus coordenadas se envían a Open-Meteo (open-source, sin cuenta, sin clave, sin rastreo publicitario) para obtener el clima y la calidad del aire actuales — nada más usa tu ubicación, y no la almacenamos.",
+    climateBtnText: "Activar correlación climática",
+    climateDaylightLabel: "horas de luz",
+    capsuleTitle: "⏳ Cápsula del Tiempo Legado",
+    capsuleWarn: "🔓 <strong>Límite honesto:</strong> esto es una promesa de interfaz, no una bóveda criptográfica. El mensaje está firmado (así puedes probar que no fue alterado después), pero la fecha de \"bloqueado hasta\" es solo una verificación en el código de esta página — cualquiera que edite el almacenamiento de su navegador o el reloj del sistema podría abrirla antes. Un bloqueo temporal real y aplicado necesita un reloj externo de confianza, que esta app aún no tiene.",
+    capsulePlaceholder: "Un mensaje para tu yo futuro (o para alguien más)...",
+    capsuleBtn: "Sellar esta cápsula →",
+    proofTitle: "📦 Exporta tu Paquete de Prueba",
+    proofDesc: "Un solo archivo con cada entrada sellada, tu clave pública, y nada más. Cualquiera — un programa de bienestar del empleador, una aseguradora, un terapeuta, un amigo escéptico — puede verificar que cada entrada es real e inalterada, <strong class=\"text-slate-300\">sin confiar en nosotros ni en nuestro servidor</strong>. Abre <code class=\"text-amber-300\">verifier.html</code> (funciona completamente sin conexión) y suelta este archivo ahí.",
+    proofBtn: "⬇ Descargar Paquete de Prueba (.json)",
+    chatTitle: "💬 Habla con tu compañero",
+    voiceOn: "🔊 voz activada", voiceOff: "🔇 voz desactivada",
+    chatWarn: "⚠️ <strong>Diferente de tu diario de arriba.</strong> Tus deslizadores y notas permanecen sellados, locales, nunca transmitidos. Los mensajes que escribes aquí <strong>sí salen de tu dispositivo</strong> — se envían a un modelo de IA para generar una respuesta. Cada respuesta se verifica por seguridad y se firma criptográficamente antes de que la veas, pero esto es una conversación, no un registro sellado.",
+    micWarn: "🎙️ <strong>Sobre el micrófono:</strong> las respuestas habladas del compañero se sintetizan completamente en tu dispositivo (no se envía audio a ningún lado para esa parte). La entrada de voz es diferente — la mayoría de los navegadores (Chrome, Safari) envían tu voz grabada a los servidores de Google o Apple para convertirla en texto, igual que cualquier función de dictado web. Donde tu navegador soporte reconocimiento totalmente local, esta página lo usa automáticamente y te lo indica abajo.",
+    chatPlaceholder: "¿Cómo está tu energía hoy?",
+    footerDisclaimer: "<strong>No es un dispositivo médico.</strong> amiQiAI es un diario de autorreflexión y conciencia energética. No diagnostica, no trata, ni reemplaza el consejo médico o de salud mental profesional. Si estás pasando por algo difícil, habla con un médico o un profesional de confianza.",
+    footerCopy: "© amiQiAI · sellado con ECDSA P-256 real (Web Crypto API) · tus datos nunca salen de tu dispositivo",
+    keyReady: "clave de firma lista — almacenada solo en este navegador",
+    sealedVerified: "✓ Sellado y verificado, en vivo",
+    sigLabel: "Firma (ECDSA P-256):",
+    selfCheck: "Auto-verificación:", valid: "VÁLIDA", invalid: "INVÁLIDA",
+    chapterNoEntries: "Aún no hay entradas para sellar.",
+    chapterSealed: "✓ Capítulo sellado — {count} entradas, firmado.",
+    entriesLabel: "entradas",
+    weeksLabel: "semana(s)",
+    archName1: "El Velocista", archDesc1: "gran impulso, funcionando con poco descanso",
+    archName2: "El Ancla", archDesc2: "estable, bien descansado, constante",
+    archName3: "Estado de Flujo", archDesc3: "energía y humor alineados",
+    archName4: "Fase de Invierno", archDesc4: "un tramo más lento — no un diagnóstico, solo un patrón",
+    archName5: "Con Reservas Bajas", archDesc5: "el sueño es el cuello de botella ahora mismo",
+    archName6: "En Medio", archDesc6: "aún sin patrón fuerte esta semana",
+    archetypeBasedOn: "(basado en {count} entradas esta semana)",
+    climateNoGeo: "Geolocalización no soportada en este navegador.",
+    climateRequesting: "Solicitando permiso de ubicación...",
+    climateFetching: "Obteniendo el clima de tu ubicación...",
+    climateFetched: "✓ Obtenido de Open-Meteo, justo ahora.",
+    climateFailed: "No se pudo contactar Open-Meteo: {msg}",
+    climateDenied: "Permiso de ubicación denegado o no disponible.",
+    climateNoteWithAvg: "Tu energía promedio de los últimos 7 días: {avg}/10 — lado a lado, sin pretensión de causalidad, solo contexto.",
+    climateNoteEmpty: "Sella algunas entradas para ver esto junto a tu tendencia de energía.",
+    capsuleNeedBoth: "Escribe un mensaje y elige una fecha.",
+    capsuleSealed: "✓ Sellada, bloqueada hasta {date}.",
+    capsuleLocked: "🔒 bloqueada",
+    capsuleOpensIn: "se abre en {days} día(s), {date}",
+    capsuleUnlocked: "🔓 desbloqueada {date}",
+    exportNoEntries: "Sella al menos una entrada primero.",
+    exportDone: "✓ {count} entradas verificadas descargadas. Abre verifier.html para revisarlas.",
+    micNotSupported: "Entrada de voz no soportada en este navegador — escribe en su lugar.",
+    micLocal: "🔒 Escuchando — procesado localmente, nada enviado a ningún lado.",
+    micCloud: "☁️ Escuchando — tu navegador enviará esta grabación a su servicio de voz (Google/Apple) para convertirla en texto.",
+    micErrorPrefix: "Error de entrada de voz:",
+    chatThinking: "pensando...",
+    chatUnavailable: "Compañero no disponible: {detail}",
+    chatUnreachable: "No se pudo contactar el backend del compañero ({base}). ¿Está desplegado?",
+    signedWord: "firmado",
+  },
+  it: {
+    navTry: "Provalo gratis",
+    heroBadge: "i tuoi dati, sigillati — non venduti",
+    heroTitle1: "Traccia la tua energia",
+    heroTitle2: "come se fosse davvero tua.",
+    heroSub: "Non un'altra app di benessere che vende i tuoi dati sull'umore. Ogni registrazione riceve un <strong class=\"text-white\">sigillo crittografico</strong> — prova verificabile che è reale, inalterabile, tua.",
+    heroCta1: "Inizia la tua serie →",
+    heroCta2: "Guarda come funziona",
+    statLocal: "locale, tuo",
+    statStreak: "giorni di fila",
+    statRealWord: "reale",
+    statCrypto: "crypto vera, non falsa ✨",
+    marquee1: "⚡ ENERGIA PRIMA DELLA PERFEZIONE",
+    marquee2: "🔒 SIGILLATO, NON SORVEGLIATO",
+    marquee3: "🌙 SONNO · UMORE · VIBE",
+    marquee4: "✨ NESSUN ACCOUNT NECESSARIO",
+    whyTitle: "Perché è diverso",
+    whySub: "Nessun altro tracker fa questa parte 👇",
+    card1Title: "Firme vere, non badge falsi",
+    card1Desc: "Ogni voce riceve una vera firma ECDSA P-256 (Web Crypto API nativa — lo stesso principio dietro TLS/HTTPS). Provalo qui sotto, adesso.",
+    card2Title: "Sembra un gioco, non un dovere",
+    card2Desc: "Cursori, serie, animazione di sigillatura istantanea. Fatto per chi è cresciuto trascinando barre in Roblox, non compilando fogli di calcolo.",
+    card3Title: "Zero raccolta dati",
+    card3Desc: "Nessun account, nessun server che memorizza i tuoi sentimenti. Tutto rimane nell'archiviazione locale del browser — esporta o cancella quando vuoi.",
+    compareTitle: "amiQiAI vs. la solita app dell'umore",
+    compareTypical: "App tipica",
+    compareRow1: "Vende i tuoi dati", compareRow1Us: "❌ mai", compareRow1Them: "di solito 👀",
+    compareRow2: "Prova crittografica", compareRow2Us: "✅ ECDSA vera",
+    compareRow3: "Richiede registrazione", compareRow3Us: "✅ no", compareRow3Them: "sempre",
+    compareRow4: "Affermazioni mediche", compareRow4Us: "❌ non diagnostichiamo", compareRow4Them: "\"insight IA sulla salute\" 🚩",
+    journalTitle: "Il tuo primo sigillo richiede 20 secondi",
+    journalSub: "Trascina, scrivi una nota, sigilla. Vera ECDSA P-256, proprio qui.",
+    keyGenerating: "generazione della tua chiave di firma...",
+    sliderEnergy: "⚡ Energia", sliderMood: "🙂 Umore", sliderSleep: "🌙 Qualità del sonno",
+    notePlaceholder: "Nota opzionale (cosa influenza la tua energia oggi?)",
+    sealBtnText: "Sigilla la voce di oggi →",
+    journalListTitle: "Il tuo diario sigillato",
+    noEntriesYet: "ancora nessuna voce — sigilla la prima qui sopra",
+    chapterTitle: "📖 Sigilla un Capitolo di Vita",
+    chapterDesc: "Raggruppa un periodo di voci in un unico capitolo firmato — medie, numero di voci, e una nota nelle tue parole. Pensato per la terapia, la riflessione tra anni, o per dare a qualcuno una prova reale invece di un ricordo vago.",
+    chapterPlaceholder: "Cosa ha definito questo periodo? (opzionale)",
+    chapterBtn: "Sigilla tutte le voci finora come Capitolo →",
+    rhythmTitle: "🌊 Ritmo Stagionale (ultimi 90 giorni)",
+    rhythmDesc: "Energia media settimanale, dalle tue voci sigillate — non il rumore quotidiano, lo schema reale.",
+    rhythmEmpty: "sigilla alcune voci in settimane diverse per vedere questo riempirsi",
+    archetypeTitle: "🎭 Il Tuo Archetipo Energetico",
+    archetypeJustFun: "solo per divertimento",
+    archetypeWarn: "Questo è un semplice riscontro deterministico sulle tue medie degli ultimi 7 giorni — sei regole fisse, nessuna IA, nessuna valutazione psicologica. Puoi leggere le regole esatte nel codice sorgente di questa pagina. È uno specchio giocoso, non un motore di insight.",
+    archetypeEmpty: "sigilla almeno 3 voci questa settimana per rivelarlo",
+    climateTitle: "☀️ Correlazione Climatica",
+    climateWarn: "🌍 <strong>Questo richiede la tua posizione.</strong> Se lo attivi, le tue coordinate vengono inviate a Open-Meteo (open-source, senza account, senza chiave, senza tracciamento pubblicitario) per ottenere il meteo e la qualità dell'aria attuali — nient'altro usa la tua posizione, e non la memorizziamo.",
+    climateBtnText: "Attiva la correlazione climatica",
+    climateDaylightLabel: "ore di luce",
+    capsuleTitle: "⏳ Capsula del Tempo Ereditaria",
+    capsuleWarn: "🔓 <strong>Limite onesto:</strong> questa è una promessa dell'interfaccia, non una cassaforte crittografica. Il messaggio è firmato (quindi puoi provare che non è stato alterato dopo), ma la data \"bloccato fino a\" è solo un controllo nel codice di questa pagina — chiunque modifichi l'archiviazione del proprio browser o l'orologio di sistema potrebbe aprirla prima. Un vero blocco temporale applicato richiede un orologio esterno affidabile, che questa app non ha ancora.",
+    capsulePlaceholder: "Un messaggio al tuo io futuro (o a qualcun altro)...",
+    capsuleBtn: "Sigilla questa capsula →",
+    proofTitle: "📦 Esporta il tuo Proof Pack",
+    proofDesc: "Un unico file con ogni voce sigillata, la tua chiave pubblica, e nient'altro. Chiunque — un programma di benessere aziendale, un assicuratore, un terapeuta, un amico scettico — può verificare che ogni voce sia reale e inalterata, <strong class=\"text-slate-300\">senza fidarsi di noi o del nostro server</strong>. Apri <code class=\"text-amber-300\">verifier.html</code> (funziona completamente offline) e trascina lì questo file.",
+    proofBtn: "⬇ Scarica il Proof Pack (.json)",
+    chatTitle: "💬 Parla con il tuo compagno",
+    voiceOn: "🔊 voce attiva", voiceOff: "🔇 voce disattivata",
+    chatWarn: "⚠️ <strong>Diverso dal tuo diario sopra.</strong> I tuoi cursori e note rimangono sigillati, locali, mai trasmessi. I messaggi che scrivi qui <strong>lasciano davvero il tuo dispositivo</strong> — vengono inviati a un modello IA per generare una risposta. Ogni risposta viene controllata per la sicurezza e firmata crittograficamente prima che tu la veda, ma questa è una conversazione, non una registrazione sigillata.",
+    micWarn: "🎙️ <strong>Riguardo al microfono:</strong> le risposte parlate del compagno sono sintetizzate interamente sul tuo dispositivo (nessun audio inviato altrove per questa parte). L'input vocale è diverso — la maggior parte dei browser (Chrome, Safari) invia la tua voce registrata ai server di Google o Apple per convertirla in testo, come qualsiasi funzione di dettatura web. Dove il tuo browser supporta il riconoscimento completamente locale, questa pagina lo usa automaticamente e te lo comunica qui sotto.",
+    chatPlaceholder: "Com'è la tua energia oggi?",
+    footerDisclaimer: "<strong>Non è un dispositivo medico.</strong> amiQiAI è un diario di auto-riflessione e consapevolezza energetica. Non diagnostica, non cura, e non sostituisce un consiglio medico o di salute mentale professionale. Se stai attraversando un momento difficile, parla con un medico o un professionista di fiducia.",
+    footerCopy: "© amiQiAI · sigillato con vera ECDSA P-256 (Web Crypto API) · i tuoi dati non lasciano mai il tuo dispositivo",
+    keyReady: "chiave di firma pronta — memorizzata solo in questo browser",
+    sealedVerified: "✓ Sigillato e verificato, dal vivo",
+    sigLabel: "Firma (ECDSA P-256):",
+    selfCheck: "Auto-verifica:", valid: "VALIDA", invalid: "NON VALIDA",
+    chapterNoEntries: "Ancora nessuna voce da sigillare.",
+    chapterSealed: "✓ Capitolo sigillato — {count} voci, firmato.",
+    entriesLabel: "voci",
+    weeksLabel: "settimana(e)",
+    archName1: "Lo Sprinter", archDesc1: "grande energia, funzionando con poco riposo",
+    archName2: "L'Ancora", archDesc2: "stabile, ben riposato, costante",
+    archName3: "Stato di Flusso", archDesc3: "energia e umore allineati",
+    archName4: "Fase Invernale", archDesc4: "un tratto più lento — non una diagnosi, solo uno schema",
+    archName5: "In Riserva", archDesc5: "il sonno è il collo di bottiglia adesso",
+    archName6: "Nel Mezzo", archDesc6: "ancora nessuno schema forte questa settimana",
+    archetypeBasedOn: "(basato su {count} voci questa settimana)",
+    climateNoGeo: "Geolocalizzazione non supportata in questo browser.",
+    climateRequesting: "Richiesta permesso di localizzazione...",
+    climateFetching: "Recupero del meteo per la tua posizione...",
+    climateFetched: "✓ Recuperato da Open-Meteo, proprio ora.",
+    climateFailed: "Impossibile contattare Open-Meteo: {msg}",
+    climateDenied: "Permesso di localizzazione negato o non disponibile.",
+    climateNoteWithAvg: "La tua energia media degli ultimi 7 giorni: {avg}/10 — fianco a fianco, senza pretesa di causalità, solo contesto.",
+    climateNoteEmpty: "Sigilla alcune voci per vedere questo accanto al tuo andamento energetico.",
+    capsuleNeedBoth: "Scrivi un messaggio e scegli una data.",
+    capsuleSealed: "✓ Sigillata, bloccata fino al {date}.",
+    capsuleLocked: "🔒 bloccata",
+    capsuleOpensIn: "si apre tra {days} giorno/i, {date}",
+    capsuleUnlocked: "🔓 sbloccata {date}",
+    exportNoEntries: "Sigilla almeno una voce prima.",
+    exportDone: "✓ {count} voci verificate scaricate. Apri verifier.html per controllarle.",
+    micNotSupported: "Input vocale non supportato in questo browser — scrivi invece.",
+    micLocal: "🔒 In ascolto — elaborato localmente, nulla inviato altrove.",
+    micCloud: "☁️ In ascolto — il tuo browser invierà questa registrazione al suo servizio vocale (Google/Apple) per convertirla in testo.",
+    micErrorPrefix: "Errore input vocale:",
+    chatThinking: "sta pensando...",
+    chatUnavailable: "Compagno non disponibile: {detail}",
+    chatUnreachable: "Impossibile contattare il backend del compagno ({base}). È distribuito?",
+    signedWord: "firmato",
+  },
+};
+
+let currentLocale = 'en';
+
+function t(key, vars) {
+  const dict = TRANSLATIONS[currentLocale] || TRANSLATIONS.en;
+  let str = dict[key] !== undefined ? dict[key] : (TRANSLATIONS.en[key] || `[${key}]`);
+  if (vars) {
+    Object.keys(vars).forEach(k => { str = str.replace(`{${k}}`, vars[k]); });
+  }
+  return str;
+}
+
+function applyTranslations(locale) {
+  currentLocale = TRANSLATIONS[locale] ? locale : 'en';
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    el.textContent = t(key);
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    el.innerHTML = t(key);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+  });
+  document.documentElement.lang = currentLocale;
+  try { localStorage.setItem('amiqiai_locale', currentLocale); } catch (e) {}
+  // re-randeaza continutul dinamic in noua limba
+  renderEntries(); renderChapters(); renderRhythm(); renderArchetype(); renderCapsules();
+  const voiceBtn = document.getElementById('voiceToggle');
+  if (voiceBtn) voiceBtn.textContent = voiceEnabled ? t('voiceOn') : t('voiceOff');
+}
+
+const langSelect = document.getElementById('langSelect');
+const savedLocale = (function () { try { return localStorage.getItem('amiqiai_locale'); } catch (e) { return null; } })();
+const browserLocale = (navigator.language || 'en').slice(0, 2);
+const initialLocale = savedLocale || (TRANSLATIONS[browserLocale] ? browserLocale : 'en');
+langSelect.value = initialLocale;
+langSelect.addEventListener('change', () => applyTranslations(langSelect.value));
+
+const STORAGE_KEY_PAIR = 'amiqiai_keypair_jwk';
+const STORAGE_ENTRIES = 'amiqiai_entries';
+let privateKey = null, publicKey = null;
+
+function bufToB64(buf) {
+  return btoa(String.fromCharCode(...new Uint8Array(buf)));
+}
+
+async function initKeys() {
+  const stored = localStorage.getItem(STORAGE_KEY_PAIR);
+  if (stored) {
+    const jwk = JSON.parse(stored);
+    privateKey = await crypto.subtle.importKey('jwk', jwk.priv, { name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign']);
+    publicKey = await crypto.subtle.importKey('jwk', jwk.pub, { name: 'ECDSA', namedCurve: 'P-256' }, true, ['verify']);
+  } else {
+    const kp = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+    privateKey = kp.privateKey; publicKey = kp.publicKey;
+    const privJwk = await crypto.subtle.exportKey('jwk', privateKey);
+    const pubJwk = await crypto.subtle.exportKey('jwk', publicKey);
+    localStorage.setItem(STORAGE_KEY_PAIR, JSON.stringify({ priv: privJwk, pub: pubJwk }));
+  }
+  document.getElementById('keyStatus').textContent = t('keyReady');
+  document.getElementById('sealBtn').disabled = false;
+  applyTranslations(initialLocale);
+  updateStreak();
+}
+
+async function sealEntry() {
+  const energy = document.getElementById('energySlider').value;
+  const mood = document.getElementById('moodSlider').value;
+  const sleep = document.getElementById('sleepSlider').value;
+  const note = document.getElementById('noteInput').value.trim();
+  const timestamp = new Date().toISOString();
+
+  const payload = { energy: +energy, mood: +mood, sleep: +sleep, note, timestamp };
+  const data = new TextEncoder().encode(JSON.stringify(payload));
+
+  const signature = await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, privateKey, data);
+  const isValid = await crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, publicKey, signature, data);
+
+  const disc = document.getElementById('sealDisc');
+  disc.classList.remove('stamped'); void disc.offsetWidth;
+  document.getElementById('sealIcon').textContent = '✓';
+  requestAnimationFrame(() => disc.classList.add('stamped'));
+
+  const sigB64 = bufToB64(signature);
+  const resultBox = document.getElementById('sealResult');
+  resultBox.classList.remove('hidden');
+  resultBox.innerHTML =
+    '<div class="text-emerald-400 font-bold mb-2">' + t('sealedVerified') + '</div>' +
+    '<div>' + t('sigLabel') + ' ' + sigB64.slice(0, 44) + '...</div>' +
+    '<div>' + t('selfCheck') + ' <span class="' + (isValid ? 'text-emerald-400' : 'text-red-400') + '">' + (isValid ? t('valid') : t('invalid')) + '</span></div>';
+
+  const entries = JSON.parse(localStorage.getItem(STORAGE_ENTRIES) || '[]');
+  entries.push({ ...payload, signature: sigB64 });
+  localStorage.setItem(STORAGE_ENTRIES, JSON.stringify(entries));
+
+  document.getElementById('noteInput').value = '';
+  renderEntries();
+  updateStreak();
+  renderRhythm();
+  renderArchetype();
+}
+
+function renderEntries() {
+  const entries = JSON.parse(localStorage.getItem(STORAGE_ENTRIES) || '[]');
+  const list = document.getElementById('entriesList');
+  if (!list) return;
+  if (entries.length === 0) { list.textContent = t('noEntriesYet'); return; }
+
+  list.innerHTML = entries.slice(-7).reverse().map(e => {
+    const date = new Date(e.timestamp);
+    return '<div class="entry-row py-2 flex justify-between items-center">' +
+      '<span>' + date.toLocaleDateString() + '</span>' +
+      '<span class="text-amber-400">⚡' + e.energy + ' 🙂' + e.mood + ' 🌙' + e.sleep + '</span>' +
+      '</div>';
+  }).join('');
+}
+
+function updateStreak() {
+  const entries = JSON.parse(localStorage.getItem(STORAGE_ENTRIES) || '[]');
+  const days = new Set(entries.map(e => new Date(e.timestamp).toDateString()));
+  let streak = 0;
+  let cursor = new Date();
+  while (days.has(cursor.toDateString())) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  document.getElementById('streakCount').textContent = streak;
+}
+
+// ============================================================
+// SEALED LIFE CHAPTERS
+// ============================================================
+const STORAGE_CHAPTERS = 'amiqiai_chapters';
+
+async function sealChapter() {
+  const entries = JSON.parse(localStorage.getItem(STORAGE_ENTRIES) || '[]');
+  const status = document.getElementById('chapterStatus');
+
+  if (entries.length === 0) {
+    status.textContent = t('chapterNoEntries');
+    return;
+  }
+
+  const narrative = document.getElementById('chapterNarrative').value.trim();
+  const dates = entries.map(e => new Date(e.timestamp));
+  const chapter = {
+    type: 'life_chapter',
+    period_start: new Date(Math.min(...dates)).toISOString(),
+    period_end: new Date(Math.max(...dates)).toISOString(),
+    entry_count: entries.length,
+    avg_energy: +(entries.reduce((s,e)=>s+e.energy,0)/entries.length).toFixed(2),
+    avg_mood: +(entries.reduce((s,e)=>s+e.mood,0)/entries.length).toFixed(2),
+    avg_sleep: +(entries.reduce((s,e)=>s+e.sleep,0)/entries.length).toFixed(2),
+    narrative,
+    sealed_at: new Date().toISOString(),
+  };
+
+  const data = new TextEncoder().encode(JSON.stringify(chapter));
+  const signature = await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, privateKey, data);
+
+  const chapters = JSON.parse(localStorage.getItem(STORAGE_CHAPTERS) || '[]');
+  chapters.push({ ...chapter, signature: bufToB64(signature) });
+  localStorage.setItem(STORAGE_CHAPTERS, JSON.stringify(chapters));
+
+  document.getElementById('chapterNarrative').value = '';
+  status.textContent = t('chapterSealed', { count: entries.length });
+  renderChapters();
+}
+
+function renderChapters() {
+  const chapters = JSON.parse(localStorage.getItem(STORAGE_CHAPTERS) || '[]');
+  const list = document.getElementById('chaptersList');
+  if (!list) return;
+  if (chapters.length === 0) { list.innerHTML = ''; return; }
+
+  list.innerHTML = chapters.slice(-3).reverse().map(c => {
+    const start = new Date(c.period_start).toLocaleDateString();
+    const end = new Date(c.period_end).toLocaleDateString();
+    return '<div class="glass rounded-xl p-3">' +
+      '<div class="text-xs text-slate-500">' + start + ' → ' + end + ' · ' + c.entry_count + ' ' + t('entriesLabel') + '</div>' +
+      '<div class="text-sm">⚡' + c.avg_energy + ' 🙂' + c.avg_mood + ' 🌙' + c.avg_sleep + '</div>' +
+      (c.narrative ? '<div class="text-xs text-slate-400 mt-1 italic">"' + c.narrative + '"</div>' : '') +
+      '</div>';
+  }).join('');
+}
+
+// ============================================================
+// SEASONAL RHYTHM
+// ============================================================
+function renderRhythm() {
+  const entries = JSON.parse(localStorage.getItem(STORAGE_ENTRIES) || '[]');
+  const chart = document.getElementById('rhythmChart');
+  const rhythmStatus = document.getElementById('rhythmStatus');
+  if (!chart) return;
+
+  const cutoff = Date.now() - 90 * 24 * 60 * 60 * 1000;
+  const recent = entries.filter(e => new Date(e.timestamp).getTime() > cutoff);
+  if (recent.length < 3) { chart.innerHTML = ''; if (rhythmStatus) rhythmStatus.textContent = t('rhythmEmpty'); return; }
+
+  const weeks = {};
+  recent.forEach(e => {
+    const weekIdx = Math.floor((Date.now() - new Date(e.timestamp).getTime()) / (7*24*60*60*1000));
+    if (!weeks[weekIdx]) weeks[weekIdx] = [];
+    weeks[weekIdx].push(e.energy);
+  });
+
+  const maxWeek = Math.max(...Object.keys(weeks).map(Number));
+  let html = '';
+  for (let w = maxWeek; w >= 0; w--) {
+    const vals = weeks[w] || [];
+    const avg = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
+    const heightPct = vals.length ? (avg/10*100) : 4;
+    html += '<div class="flex-1 rounded-t" style="height:' + heightPct + '%; background:' +
+      (vals.length ? 'linear-gradient(to top, #14b8a6, #5eead4)' : 'rgba(255,255,255,0.05)') + ';" ' +
+      'title="' + (vals.length ? 'week -' + w + ': ' + avg.toFixed(1) : 'no data') + '"></div>';
+  }
+  chart.innerHTML = html;
+  rhythmStatus.textContent = recent.length + ' ' + t('entriesLabel') + ' · ' + (maxWeek+1) + ' ' + t('weeksLabel');
+}
+
+// ============================================================
+// ENERGY ARCHETYPE - reguli deterministice fixe, traduse
+// ============================================================
+function computeArchetype(avgEnergy, avgMood, avgSleep) {
+  if (avgEnergy >= 7 && avgSleep <= 5) return { name: t('archName1'), desc: t('archDesc1') };
+  if (avgSleep >= 8 && avgEnergy >= 5 && avgEnergy <= 7) return { name: t('archName2'), desc: t('archDesc2') };
+  if (avgEnergy >= 7 && avgMood >= 7) return { name: t('archName3'), desc: t('archDesc3') };
+  if (avgEnergy <= 4 && avgMood <= 4) return { name: t('archName4'), desc: t('archDesc4') };
+  if (avgSleep <= 4) return { name: t('archName5'), desc: t('archDesc5') };
+  return { name: t('archName6'), desc: t('archDesc6') };
+}
+
+function renderArchetype() {
+  const entries = JSON.parse(localStorage.getItem(STORAGE_ENTRIES) || '[]');
+  const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const recent = entries.filter(e => new Date(e.timestamp).getTime() > cutoff);
+  const nameEl = document.getElementById('archetypeName');
+  const descEl = document.getElementById('archetypeDesc');
+  if (!nameEl) return;
+
+  if (recent.length < 3) {
+    nameEl.textContent = '—';
+    descEl.textContent = t('archetypeEmpty');
+    return;
+  }
+
+  const avg = key => recent.reduce((s,e)=>s+e[key],0) / recent.length;
+  const result = computeArchetype(avg('energy'), avg('mood'), avg('sleep'));
+  nameEl.textContent = result.name;
+  descEl.textContent = result.desc + ' ' + t('archetypeBasedOn', { count: recent.length });
+}
+
+// ============================================================
+// CLIMATE CORRELATION - Open-Meteo. NETESTAT LIVE de mine.
+// ============================================================
+async function enableClimateCorrelation() {
+  const status = document.getElementById('climateStatus');
+  const btn = document.getElementById('climateBtn');
+
+  if (!('geolocation' in navigator)) {
+    status.textContent = t('climateNoGeo');
+    return;
+  }
+
+  btn.disabled = true;
+  status.textContent = t('climateRequesting');
+
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const { latitude, longitude } = pos.coords;
+    status.textContent = t('climateFetching');
+
+    try {
+      const weatherResp = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}` +
+        `&current=temperature_2m&daily=sunrise,sunset&timezone=auto`
+      );
+      const weather = await weatherResp.json();
+
+      const airResp = await fetch(
+        `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=pm2_5`
+      );
+      const air = await airResp.json();
+
+      const sunrise = new Date(weather.daily.sunrise[0]);
+      const sunset = new Date(weather.daily.sunset[0]);
+      const daylightHours = ((sunset - sunrise) / (1000*60*60)).toFixed(1);
+
+      document.getElementById('climateTemp').textContent = weather.current.temperature_2m.toFixed(1);
+      document.getElementById('climatePM25').textContent = air.current.pm2_5.toFixed(1);
+      document.getElementById('climateDaylight').textContent = daylightHours;
+      document.getElementById('climateResult').classList.remove('hidden');
+
+      const entries = JSON.parse(localStorage.getItem(STORAGE_ENTRIES) || '[]');
+      const recentAvgEnergy = entries.slice(-7).length
+        ? entries.slice(-7).reduce((s,e)=>s+e.energy,0) / entries.slice(-7).length
+        : null;
+      document.getElementById('climateNote').textContent = recentAvgEnergy
+        ? t('climateNoteWithAvg', { avg: recentAvgEnergy.toFixed(1) })
+        : t('climateNoteEmpty');
+
+      status.textContent = t('climateFetched');
+    } catch (e) {
+      status.textContent = t('climateFailed', { msg: e.message });
+    }
+    btn.disabled = false;
+  }, (err) => {
+    status.textContent = t('climateDenied');
+    btn.disabled = false;
+  });
+}
+
+// ============================================================
+// LEGACY TIME CAPSULES
+// ============================================================
+const STORAGE_CAPSULES = 'amiqiai_capsules';
+
+async function sealCapsule() {
+  const message = document.getElementById('capsuleMessage').value.trim();
+  const openDate = document.getElementById('capsuleDate').value;
+  const status = document.getElementById('capsuleStatus');
+
+  if (!message || !openDate) {
+    status.textContent = t('capsuleNeedBoth');
+    return;
+  }
+
+  const capsule = {
+    type: 'legacy_capsule',
+    message,
+    sealed_at: new Date().toISOString(),
+    unlock_date: openDate,
+  };
+
+  const data = new TextEncoder().encode(JSON.stringify(capsule));
+  const signature = await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, privateKey, data);
+
+  const capsules = JSON.parse(localStorage.getItem(STORAGE_CAPSULES) || '[]');
+  capsules.push({ ...capsule, signature: bufToB64(signature) });
+  localStorage.setItem(STORAGE_CAPSULES, JSON.stringify(capsules));
+
+  document.getElementById('capsuleMessage').value = '';
+  document.getElementById('capsuleDate').value = '';
+  status.textContent = t('capsuleSealed', { date: openDate });
+  renderCapsules();
+}
+
+function renderCapsules() {
+  const capsules = JSON.parse(localStorage.getItem(STORAGE_CAPSULES) || '[]');
+  const list = document.getElementById('capsulesList');
+  if (!list) return;
+  if (capsules.length === 0) { list.innerHTML = ''; return; }
+
+  const now = new Date();
+  list.innerHTML = capsules.map(c => {
+    const unlock = new Date(c.unlock_date);
+    const isLocked = now < unlock;
+    if (isLocked) {
+      const daysLeft = Math.ceil((unlock - now) / (1000*60*60*24));
+      return '<div class="glass rounded-xl p-3 flex justify-between items-center">' +
+        '<span class="text-slate-500">' + t('capsuleLocked') + '</span>' +
+        '<span class="text-xs text-slate-500">' + t('capsuleOpensIn', { days: daysLeft, date: c.unlock_date }) + '</span></div>';
+    }
+    return '<div class="glass rounded-xl p-3">' +
+      '<div class="text-xs text-emerald-400 mb-1">' + t('capsuleUnlocked', { date: c.unlock_date }) + '</div>' +
+      '<div class="text-sm italic">"' + c.message + '"</div></div>';
+  }).join('');
+}
+
+async function exportProofPack() {
+  const entries = JSON.parse(localStorage.getItem(STORAGE_ENTRIES) || '[]');
+  const status = document.getElementById('exportStatus');
+
+  if (entries.length === 0) {
+    status.textContent = t('exportNoEntries');
+    return;
+  }
+
+  const pubJwk = await crypto.subtle.exportKey('jwk', publicKey);
+
+  const proofPack = {
+    format: 'amiQiAI-proof-pack',
+    version: '1.0',
+    exported_at: new Date().toISOString(),
+    algorithm: 'ECDSA-P256-SHA256',
+    entry_count: entries.length,
+    public_key_jwk: pubJwk,
+    entries: entries,
+    verify_instructions: 'Open verifier.html (works fully offline, no server, no upload) and load this file to independently check every signature.',
+  };
+
+  const blob = new Blob([JSON.stringify(proofPack, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'amiqiai-proof-pack-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  status.textContent = t('exportDone', { count: entries.length });
+}
+
+// ============================================================
+// COMPANION CHAT
+// ============================================================
+const API_BASE = window.AMIQIAI_API_BASE || 'http://localhost:8000';
+
+let voiceEnabled = true;
+
+const STORAGE_WARNINGS = 'amiqiai_dismissed_warnings';
+
+function dismissWarning(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'none';
+
+  const dismissed = JSON.parse(localStorage.getItem(STORAGE_WARNINGS) || '[]');
+  if (!dismissed.includes(id)) {
+    dismissed.push(id);
+    localStorage.setItem(STORAGE_WARNINGS, JSON.stringify(dismissed));
+  }
+}
+
+function applyDismissedWarnings() {
+  const dismissed = JSON.parse(localStorage.getItem(STORAGE_WARNINGS) || '[]');
+  dismissed.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
+applyDismissedWarnings();
+
+function toggleVoice() {
+  voiceEnabled = !voiceEnabled;
+  document.getElementById('voiceToggle').textContent = voiceEnabled ? t('voiceOn') : t('voiceOff');
+  if (!voiceEnabled) speechSynthesis.cancel();
+}
+
+function speakText(text) {
+  if (!voiceEnabled || !('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+  speechSynthesis.speak(utterance);
+}
+
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isListening = false;
+
+async function toggleMic() {
+  const micStatus = document.getElementById('micStatus');
+  const micBtn = document.getElementById('micBtn');
+
+  if (!SpeechRecognitionAPI) {
+    micStatus.textContent = t('micNotSupported');
+    return;
+  }
+
+  if (isListening) {
+    recognition.stop();
+    return;
+  }
+
+  recognition = new SpeechRecognitionAPI();
+  recognition.lang = currentLocale + '-' + currentLocale.toUpperCase();
+  recognition.interimResults = false;
+
+  let usingOnDevice = false;
+  try {
+    if (SpeechRecognitionAPI.available) {
+      const availability = await SpeechRecognitionAPI.available({ langs: [recognition.lang] });
+      if (availability === 'available') {
+        recognition.processLocally = true;
+        usingOnDevice = true;
+      }
+    }
+  } catch (e) {
+    usingOnDevice = false;
+  }
+
+  micStatus.textContent = usingOnDevice ? t('micLocal') : t('micCloud');
+
+  recognition.onstart = () => {
+    isListening = true;
+    micBtn.classList.add('bg-red-500/30');
+    micBtn.textContent = '⏹️';
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById('chatInput').value = transcript;
+  };
+
+  recognition.onerror = (event) => {
+    micStatus.textContent = t('micErrorPrefix') + ' ' + event.error;
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    micBtn.classList.remove('bg-red-500/30');
+    micBtn.textContent = '🎙️';
+  };
+
+  recognition.start();
+}
+
+async function sendChatMessage() {
+  const input = document.getElementById('chatInput');
+  const message = input.value.trim();
+  if (!message) return;
+
+  const messagesDiv = document.getElementById('chatMessages');
+  const status = document.getElementById('chatStatus');
+
+  messagesDiv.innerHTML += '<div class="text-right"><span class="inline-block bg-purple-500/20 rounded-2xl px-4 py-2 text-sm">' +
+    message.replace(/</g,'&lt;') + '</span></div>';
+  input.value = '';
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+  document.getElementById('chatSendBtn').disabled = true;
+  status.textContent = t('chatThinking');
+
+  try {
+    const resp = await fetch(API_BASE + '/companion/amiqi/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, locale: currentLocale.toUpperCase() })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json();
+      status.textContent = t('chatUnavailable', { detail: err.detail || resp.status });
+      document.getElementById('chatSendBtn').disabled = false;
+      return;
+    }
+
+    const data = await resp.json();
+    const isCrisis = data.is_crisis_response;
+    messagesDiv.innerHTML += '<div><span class="inline-block ' +
+      (isCrisis ? 'bg-red-500/20 border border-red-400/30' : 'bg-white/5') +
+      ' rounded-2xl px-4 py-2 text-sm">' + data.response.replace(/</g,'&lt;') + '</span>' +
+      (data.certified ? '<div class="text-xs text-emerald-400 mt-1">✓ ' + t('signedWord') + ' · ' + data.engine + '</div>' : '') +
+      '</div>';
+    status.textContent = '';
+    speakText(data.response);
+  } catch (e) {
+    status.textContent = t('chatUnreachable', { base: API_BASE });
+  }
+
+  document.getElementById('chatSendBtn').disabled = false;
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+initKeys();
+
+</script>
+
+</body>
+</html>
