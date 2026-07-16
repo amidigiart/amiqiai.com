@@ -44,6 +44,9 @@ class OpenAICompatAdapter:
         try:
             with urllib.request.urlopen(req, timeout=self.timeout) as r:
                 data = json.loads(r.read())
+        except urllib.error.HTTPError as e:
+            body = e.read().decode(errors="replace")[:200]
+            raise AdapterError(f"{self.name or self.model}: HTTP {e.code} — {body}") from e
         except Exception as e:
             raise AdapterError(f"{self.name or self.model}: {e}") from e
         try:
