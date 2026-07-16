@@ -13,6 +13,7 @@ import os
 import time
 from base64 import b64encode
 
+import stripe
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -30,6 +31,13 @@ DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
 DEEPSEEK_KEY = os.getenv("DEEPSEEK_API_KEY", "")
 
 MOCK_MODE = os.getenv("AMIQIAI_MOCK", "false").lower() == "true"
+
+STRIPE_SECRET = os.getenv("STRIPE_SECRET_KEY", "")
+STRIPE_PRICE_ID = os.getenv("STRIPE_PRICE_ID", "")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
+SITE_URL = os.getenv("SITE_URL", "https://amiqiai.com")
+
+stripe.api_key = STRIPE_SECRET
 
 ALLOWED_ORIGINS = os.getenv(
     "CORS_ORIGINS", "https://amiqiai.com,http://localhost:8000"
@@ -125,6 +133,7 @@ def health():
         "engine": "dual (Grok + DeepSeek)" if ENGINE else "mock",
         "grok_configured": bool(GROK_KEY),
         "deepseek_configured": bool(DEEPSEEK_KEY),
+        "stripe_configured": bool(STRIPE_SECRET and STRIPE_PRICE_ID),
         "mock_mode": MOCK_MODE or not ENGINE,
     }
 
@@ -180,6 +189,57 @@ def chat(req: ChatRequest, request: Request):
         signature=sig,
         is_crisis_response=False,
     )
+
+
+@app.post("/create-checkout-session")
+def create_checkout():
+    if not STRIPE_SECRET or not STRIPE_PRICE_ID:
+        raise HTTPException(503, "Payment system not configured yet")
+    try:
+        session = stripe.checkout.Session.create(
+            mode="subscription",
+            payment_method_types=["card"],
+            line_items=[{"price": STRIPE_PRICE_ID, "quantity": 1}],
+            success_url=SITE_URL + "?payment=success",
+            cancel_url=SITE_URL + "?payment=cancelled",
+        )
+    except stripe.error.StripeError as e:
+        raise HTTPException(502, f"Payment provider error: {e.user_message or str(e)}")
+    return {"url": session.url}
+
+
+@app.post("/stripe-webhook")
+async def stripe_webhook(request: Request):
+    payload = await request.body()
+    sig = request.headers.get("stripe-signature", "")
+    try:
+        event = stripe.Webhook.construct_event(payload, sig, STRIPE_WEBHOOK_SECRET)
+    except (ValueError, stripe.error.SignatureVerificationError):
+        raise HTTPException(400, "Invalid webhook signature")
+    if event["type"] == "checkout.session.completed":
+        print(f"[STRIPE] New sub: {event['data']['object'].get('customer_email', '?')}")
+    elif event["type"] == "customer.subscription.deleted":
+        print(f"[STRIPE] Sub cancelled: {event['data']['object'].get('id')}")
+    return {"received": True}
+
+
+@app.post("/gdpr/data-request")
+def gdpr_data_request():
+    return {
+        "message": "amiQiAI stores journal data only in your browser (localStorage). "
+                   "Chat messages are processed in real-time and not stored on our servers. "
+                   "For subscription data, email privacy@amiqiai.com.",
+        "data_stored": "none (stateless processing, local-first journal)",
+    }
+
+
+@app.delete("/gdpr/delete")
+def gdpr_delete():
+    return {
+        "message": "No personal data to delete server-side. Journal data is in your browser — "
+                   "clear localStorage to remove it. For Stripe data, email privacy@amiqiai.com.",
+        "status": "no_server_data_held",
+    }
 
 
 if __name__ == "__main__":

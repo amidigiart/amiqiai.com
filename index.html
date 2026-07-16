@@ -346,11 +346,74 @@
     </div>
   </section>
 
+  <!-- Pricing -->
+  <section class="max-w-4xl mx-auto px-6 py-16" id="pricing">
+    <h2 class="text-3xl font-black text-center mb-3">Simple pricing</h2>
+    <p class="text-center text-slate-400 mb-10">Start free, upgrade when you need more.</p>
+    <div class="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+      <div class="glass rounded-2xl p-8">
+        <h3 class="text-xl font-bold mb-1">Free</h3>
+        <div class="text-4xl font-black my-4">€0 <span class="text-base font-normal text-slate-400">forever</span></div>
+        <p class="text-xs text-slate-400 mb-6">No credit card required</p>
+        <ul class="space-y-2 text-sm text-slate-300 mb-8">
+          <li>✓ 5 companion questions / day</li>
+          <li>✓ Unlimited journal entries</li>
+          <li>✓ ECDSA P-256 cryptographic sealing</li>
+          <li>✓ All core features</li>
+          <li>✓ No account needed</li>
+        </ul>
+        <button onclick="scrollToApp()" class="w-full glass py-3 rounded-xl text-sm font-semibold hover:bg-white/10 transition">Start free</button>
+      </div>
+      <div class="rounded-2xl p-8 relative" style="background:rgba(167,139,250,.08);border:1.5px solid rgba(167,139,250,.3)">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-400 to-amber-400 text-slate-900 text-xs font-black px-4 py-1 rounded-full">MOST POPULAR</div>
+        <h3 class="text-xl font-bold mb-1">Pro</h3>
+        <div class="text-4xl font-black my-4">€9.99 <span class="text-base font-normal text-slate-400">/month</span></div>
+        <p class="text-xs text-slate-400 mb-6">Cancel anytime · VAT included</p>
+        <ul class="space-y-2 text-sm text-slate-300 mb-8">
+          <li>✓ Unlimited companion questions</li>
+          <li>✓ Unlimited journal entries</li>
+          <li>✓ Priority dual-engine responses</li>
+          <li>✓ Advanced energy analytics</li>
+          <li>✓ Proof Pack export</li>
+          <li>✓ Email support</li>
+        </ul>
+        <button id="proBuyBtn" onclick="handleProPurchase()" class="w-full py-3 rounded-xl text-sm font-black bg-gradient-to-r from-purple-400 to-amber-400 text-slate-900 hover:scale-105 transition">Upgrade to Pro</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Compliance -->
+  <section class="max-w-4xl mx-auto px-6 py-12">
+    <div class="glass rounded-2xl p-8">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="font-bold text-sm mb-2">🇪🇺 EU AI Act (Reg. 2024/1689)</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">amiQiAI is a limited-risk AI system. We comply with Art. 50 transparency obligations: users are informed they interact with AI, models are disclosed, limitations are stated. <a href="#" onclick="openModal('ai-act');return false" class="text-purple-400 hover:underline">Learn more →</a></p>
+        </div>
+        <div>
+          <h3 class="font-bold text-sm mb-2">🔒 GDPR (Reg. 2016/679)</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Minimal data processing. Journal data stays in your browser (localStorage). Chat processed in real-time, not stored. Payments handled by Stripe. <a href="#" onclick="openModal('privacy');return false" class="text-purple-400 hover:underline">Privacy policy →</a></p>
+        </div>
+        <div>
+          <h3 class="font-bold text-sm mb-2">⚕️ Medical disclaimer</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">amiQiAI provides self-reflection tools only. It is not a medical device, does not diagnose or treat, and is not a substitute for professional advice.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer class="max-w-4xl mx-auto px-6 pb-16">
     <div class="glass rounded-2xl p-5 text-sm text-amber-200/90 mb-8" data-i18n-html="footerDisclaimer">
       <strong>Not a medical device.</strong> amiQiAI is a self-reflection and energy-awareness journal.
       It does not diagnose, treat, or replace professional medical or mental health advice.
       If you're struggling, please talk to a doctor or a trusted professional.
+    </div>
+    <div class="flex flex-wrap justify-center gap-4 text-xs text-slate-500 mb-4">
+      <a href="#" onclick="openModal('privacy');return false" class="hover:text-purple-400">Privacy Policy</a>
+      <a href="#" onclick="openModal('terms');return false" class="hover:text-purple-400">Terms of Service</a>
+      <a href="#" onclick="openModal('ai-act');return false" class="hover:text-purple-400">AI Transparency</a>
+      <a href="#" onclick="openModal('imprint');return false" class="hover:text-purple-400">Imprint</a>
+      <a href="mailto:privacy@amiqiai.com" class="hover:text-purple-400">GDPR Requests</a>
     </div>
     <div class="text-center text-slate-600 text-xs" data-i18n="footerCopy">
       © amiQiAI · sealed with real ECDSA P-256 (Web Crypto API) · your data never leaves your device
@@ -1573,7 +1636,137 @@ async function sendChatMessage() {
 
 initKeys();
 
+// --- Stripe / Pro ---
+const PRO_KEY = 'amiqiai_pro';
+const CONSENT_KEY = 'amiqiai_consent';
+
+function isPro() { return localStorage.getItem(PRO_KEY) === 'active'; }
+
+async function handleProPurchase() {
+  const btn = document.getElementById('proBuyBtn');
+  btn.textContent = 'Redirecting...';
+  btn.disabled = true;
+  try {
+    const res = await fetch(API_BASE + '/create-checkout-session', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else throw new Error('No URL');
+  } catch (e) {
+    btn.textContent = 'Upgrade to Pro';
+    btn.disabled = false;
+    alert('Payment system is being configured. Please try again later or contact hello@amiqiai.com');
+  }
+}
+
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('payment') === 'success') {
+    localStorage.setItem(PRO_KEY, 'active');
+    history.replaceState({}, '', window.location.pathname);
+  }
+  if (params.get('payment') === 'cancelled') {
+    history.replaceState({}, '', window.location.pathname);
+  }
+})();
+
+// --- Cookie consent ---
+function cookieConsent(accept) {
+  localStorage.setItem(CONSENT_KEY, accept ? 'essential' : 'rejected');
+  document.getElementById('cookieBanner').style.display = 'none';
+}
+(function() {
+  if (!localStorage.getItem(CONSENT_KEY)) {
+    setTimeout(function() { document.getElementById('cookieBanner').style.display = 'block'; }, 1500);
+  }
+})();
+
+// --- Modals ---
+function openModal(name) { document.getElementById('modal-' + name).style.display = 'flex'; }
+function closeModal(name) { document.getElementById('modal-' + name).style.display = 'none'; }
+
 </script>
+
+<!-- Cookie Banner -->
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid rgba(255,255,255,.1);padding:16px 24px;z-index:9999">
+  <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+    <p style="flex:1;min-width:280px;font-size:.82rem;color:#aaa;margin:0">We use only <strong style="color:#ddd">essential cookies</strong> (session, consent). No tracking, analytics, or ads. <a href="#" onclick="openModal('privacy');return false" style="color:#A78BFA">Privacy Policy</a></p>
+    <div style="display:flex;gap:8px">
+      <button onclick="cookieConsent(false)" style="padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:600;background:#222;color:#ddd;border:1px solid #333;cursor:pointer">Reject non-essential</button>
+      <button onclick="cookieConsent(true)" style="padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:700;background:#A78BFA;color:#111;border:none;cursor:pointer">Accept essential only</button>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div id="modal-privacy" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:10000;align-items:center;justify-content:center;padding:24px" onclick="if(event.target===this)closeModal('privacy')">
+  <div style="background:#151520;border:1px solid rgba(255,255,255,.1);border-radius:20px;max-width:700px;width:100%;max-height:80vh;overflow-y:auto;padding:36px;color:#ccc;font-size:.88rem;line-height:1.8">
+    <button onclick="closeModal('privacy')" style="float:right;background:#222;border:1px solid #333;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer">✕</button>
+    <h2 style="font-size:1.5rem;color:#fff;margin-bottom:20px">Privacy Policy</h2>
+    <p><strong>Last updated:</strong> July 2026 · <strong>Controller:</strong> amiQiAI, Timișoara, Romania · <strong>Contact:</strong> privacy@amiqiai.com</p>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">1. What data we process</h3>
+    <ul style="padding-left:20px"><li><strong>Journal entries:</strong> Stored exclusively in your browser's localStorage. Never sent to our servers. Cryptographically sealed with ECDSA P-256 on your device.</li><li><strong>Chat messages:</strong> Processed in real-time by our AI engines (Grok by xAI, DeepSeek). NOT stored on our servers after response generation.</li><li><strong>IP address:</strong> Used only for rate limiting. Not logged beyond active session.</li><li><strong>Payment data (Pro):</strong> Processed exclusively by Stripe (PCI-DSS Level 1). We store only Stripe customer ID and email.</li></ul>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">2. Legal basis (GDPR Art. 6)</h3>
+    <ul style="padding-left:20px"><li><strong>Contract performance</strong> (Art. 6(1)(b)): Processing chat messages to provide the service.</li><li><strong>Legitimate interest</strong> (Art. 6(1)(f)): Rate limiting, security.</li><li><strong>Consent</strong> (Art. 6(1)(a)): For any non-essential processing (currently none).</li></ul>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">3. Data processors</h3>
+    <ul style="padding-left:20px"><li><strong>xAI (Grok):</strong> Chat processing. USA. SCCs.</li><li><strong>DeepSeek:</strong> Chat processing. China. SCCs + supplementary measures.</li><li><strong>Stripe:</strong> Payments. PCI-DSS L1. USA/Ireland. EU data in EU.</li><li><strong>Railway:</strong> Server hosting. USA. SCCs.</li><li><strong>GitHub (Microsoft):</strong> Static hosting. USA. EU-US DPF.</li></ul>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">4. Your rights (GDPR Art. 15-22)</h3>
+    <p>Access (Art. 15), Rectification (Art. 16), Erasure (Art. 17), Restriction (Art. 18), Portability (Art. 20), Objection (Art. 21), No automated decisions with legal effect (Art. 22).</p>
+    <p>Email <a href="mailto:privacy@amiqiai.com" style="color:#A78BFA">privacy@amiqiai.com</a>. Response within 30 days. Complaint to ANSPDCP (Romania) or your local DPA.</p>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">5. Data retention</h3>
+    <ul style="padding-left:20px"><li>Journal: Your device only (localStorage)</li><li>Chat: Not retained (real-time only)</li><li>Rate limit: 60s window</li><li>Subscription: Until deletion or 30 days post-cancellation</li></ul>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">6. Children</h3>
+    <p>Not intended for persons under 16. We do not knowingly collect data from children.</p>
+  </div>
+</div>
+
+<!-- Terms Modal -->
+<div id="modal-terms" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:10000;align-items:center;justify-content:center;padding:24px" onclick="if(event.target===this)closeModal('terms')">
+  <div style="background:#151520;border:1px solid rgba(255,255,255,.1);border-radius:20px;max-width:700px;width:100%;max-height:80vh;overflow-y:auto;padding:36px;color:#ccc;font-size:.88rem;line-height:1.8">
+    <button onclick="closeModal('terms')" style="float:right;background:#222;border:1px solid #333;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer">✕</button>
+    <h2 style="font-size:1.5rem;color:#fff;margin-bottom:20px">Terms of Service</h2>
+    <p><strong>Last updated:</strong> July 2026</p>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">1. Service</h3>
+    <p>amiQiAI is an AI-powered energy/mood/sleep journaling tool with a dual-engine companion chat (Grok + DeepSeek).</p>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">2. Not medical advice</h3>
+    <p><strong>amiQiAI does NOT provide medical advice, diagnosis, or treatment.</strong> It is a self-reflection journal. Always consult a professional for health concerns.</p>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">3. Subscriptions</h3>
+    <ul style="padding-left:20px"><li>Free: 5 companion questions/day, unlimited journal</li><li>Pro: €9.99/month (VAT included), billed monthly via Stripe</li><li>Cancel anytime — no fees. 14-day cooling-off per EU Consumer Rights Directive</li></ul>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">4. Data ownership</h3>
+    <p>Your journal data belongs to you. It is stored only on your device. Cryptographic proofs (ECDSA P-256) are generated locally. You can export everything via Proof Pack at any time.</p>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">5. Governing law</h3>
+    <p>Romanian law. Courts of Timișoara, without prejudice to EU consumer rights.</p>
+  </div>
+</div>
+
+<!-- AI Act Transparency Modal -->
+<div id="modal-ai-act" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:10000;align-items:center;justify-content:center;padding:24px" onclick="if(event.target===this)closeModal('ai-act')">
+  <div style="background:#151520;border:1px solid rgba(255,255,255,.1);border-radius:20px;max-width:700px;width:100%;max-height:80vh;overflow-y:auto;padding:36px;color:#ccc;font-size:.88rem;line-height:1.8">
+    <button onclick="closeModal('ai-act')" style="float:right;background:#222;border:1px solid #333;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer">✕</button>
+    <h2 style="font-size:1.5rem;color:#fff;margin-bottom:20px">AI System Transparency Notice</h2>
+    <p><strong>Per EU AI Act (Regulation 2024/1689), Article 50</strong></p>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">System identification</h3>
+    <ul style="padding-left:20px"><li><strong>System:</strong> amiQiAI Companion</li><li><strong>Provider:</strong> amiQiAI, Timișoara, Romania</li><li><strong>Risk:</strong> Limited-risk (transparency obligations)</li><li><strong>Purpose:</strong> Energy/mood/sleep journaling with AI companion</li></ul>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">AI models</h3>
+    <ul style="padding-left:20px"><li><strong>Grok</strong> (xAI) — general-purpose LLM</li><li><strong>DeepSeek</strong> — general-purpose LLM</li><li><strong>Architecture:</strong> Dual-engine anti-confabulation. Both answer independently; concordance ≥ 0.45 + no numeric conflict = delivered. Otherwise honest refusal.</li></ul>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">Limitations</h3>
+    <ul style="padding-left:20px"><li>May produce incorrect information despite dual verification</li><li>Cannot diagnose, prescribe, or replace professional advice</li><li>Training data cutoff — may not reflect latest research</li><li>Concordance reduces but does not eliminate confabulation risk</li></ul>
+    <h3 style="color:#A78BFA;margin:20px 0 8px">Contact</h3>
+    <p><a href="mailto:hello@amiqiai.com" style="color:#A78BFA">hello@amiqiai.com</a></p>
+  </div>
+</div>
+
+<!-- Imprint Modal -->
+<div id="modal-imprint" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:10000;align-items:center;justify-content:center;padding:24px" onclick="if(event.target===this)closeModal('imprint')">
+  <div style="background:#151520;border:1px solid rgba(255,255,255,.1);border-radius:20px;max-width:700px;width:100%;max-height:80vh;overflow-y:auto;padding:36px;color:#ccc;font-size:.88rem;line-height:1.8">
+    <button onclick="closeModal('imprint')" style="float:right;background:#222;border:1px solid #333;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer">✕</button>
+    <h2 style="font-size:1.5rem;color:#fff;margin-bottom:20px">Imprint</h2>
+    <p><strong>Service provider:</strong> amiQiAI</p>
+    <p><strong>Representative:</strong> Mihai Roșca</p>
+    <p><strong>Address:</strong> Timișoara, Romania</p>
+    <p><strong>Email:</strong> <a href="mailto:hello@amiqiai.com" style="color:#A78BFA">hello@amiqiai.com</a></p>
+    <p><strong>Privacy:</strong> <a href="mailto:privacy@amiqiai.com" style="color:#A78BFA">privacy@amiqiai.com</a></p>
+  </div>
+</div>
 
 </body>
 </html>
